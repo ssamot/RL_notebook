@@ -1,0 +1,69 @@
+%&latex
+\documentclass{minimal}
+\begin{document}
+
+\gdef\mpxshipout{\shipout\hbox\bgroup%
+  \setbox0=\hbox\bgroup}%
+\gdef\stopmpxshipout{\egroup  \dimen0=\ht0 \advance\dimen0\dp0
+  \dimen1=\ht0 \dimen2=\dp0
+  \setbox0=\hbox\bgroup
+    \box0
+    \ifnum\dimen0>0 \vrule width1sp height\dimen1 depth\dimen2 
+    \else \vrule width1sp height1sp depth0sp\relax
+    \fi\egroup
+  \ht0=0pt \dp0=0pt \box0 \egroup}
+\mpxshipout% line 41 ./MDPExample.mp
+{\usefont{OT1}{phv}{m}{n} Flying}%
+\stopmpxshipout
+\mpxshipout% line 43 ./MDPExample.mp
+{\usefont{OT1}{phv}{m}{n} R = 0}%
+\stopmpxshipout
+\mpxshipout% line 56 ./MDPExample.mp
+{\usefont{OT1}{phv}{m}{n} Attack_Turtle}%
+\stopmpxshipout
+\mpxshipout% line 69 ./MDPExample.mp
+{\usefont{OT1}{phv}{m}{n} Attack_Boar}%
+\stopmpxshipout
+\mpxshipout% line 115 ./MDPExample.mp
+{\usefont{OT1}{phv}{m}{n} Turtle_Grabbed}%
+\stopmpxshipout
+\mpxshipout% line 117 ./MDPExample.mp
+{\usefont{OT1}{phv}{m}{n} R = 3}%
+\stopmpxshipout
+\mpxshipout% line 119 ./MDPExample.mp
+{\usefont{OT1}{phv}{m}{n} }%
+\stopmpxshipout
+\mpxshipout% line 121 ./MDPExample.mp
+{\usefont{OT1}{phv}{m}{n} }%
+\stopmpxshipout
+\mpxshipout% line 175 ./MDPExample.mp
+{\usefont{OT1}{phv}{m}{n} Turtle_Escaped}%
+\stopmpxshipout
+\mpxshipout% line 177 ./MDPExample.mp
+{\usefont{OT1}{phv}{m}{n} R = 0}%
+\stopmpxshipout
+\mpxshipout% line 205 ./MDPExample.mp
+{\usefont{OT1}{phv}{m}{n} Keep_Flying}%
+\stopmpxshipout
+\mpxshipout% line 207 ./MDPExample.mp
+{\usefont{OT1}{phv}{m}{n} }%
+\stopmpxshipout
+\mpxshipout% line 253 ./MDPExample.mp
+{\usefont{OT1}{phv}{m}{n} }%
+\stopmpxshipout
+\mpxshipout% line 255 ./MDPExample.mp
+{\usefont{OT1}{phv}{m}{n} Boar_Escaped}%
+\stopmpxshipout
+\mpxshipout% line 257 ./MDPExample.mp
+{\usefont{OT1}{phv}{m}{n} R = 0}%
+\stopmpxshipout
+\mpxshipout% line 259 ./MDPExample.mp
+{\usefont{OT1}{phv}{m}{n} Boar_Grabbed}%
+\stopmpxshipout
+\mpxshipout% line 261 ./MDPExample.mp
+{\usefont{OT1}{phv}{m}{n} R = 10}%
+\stopmpxshipout
+\mpxshipout% line 263 ./MDPExample.mp
+{\usefont{OT1}{phv}{m}{n} $\gamma = 0.99$}%
+\stopmpxshipout
+\end{document}
