@@ -1740,10 +1740,12 @@ div.output_prompt {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="outline">Outline</h2>
+<hr>
 <ul>
-<li>Introduction<ul>
+<li>Introduction &amp; Motivation<ul>
 <li>What is Reinforcement Learning (RL) ?</li>
 <li>Markov Decision Process (MDPs)</li>
+<li>Bellman Equations</li>
 </ul>
 </li>
 <li>Model-Based Reinforcement Learning<ul>
@@ -1771,11 +1773,12 @@ div.output_prompt {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="what-is-reinforcment-learning-">What is Reinforcment Learning? </h2>
+<hr>
 <ul>
 <li><em>Reinforcement learning is the study of how animals and artificial systems can learn to optimize their behavior in the face of rewards and punishments</em> -- Peter Dyan, Encyclopedia of Cognitive Science</li>
 <li>Not Supervised Learning - the animal/agent is not provided with examples of optimal behaviour, it has to be discovered!</li>
 <li>It subsumes most Artificial Intelligence problems. Forms the basis of most modern intelligent agents frameworks</li>
-<li>Ideas drawn from a wide range of contexts, inclusing psychology (e.g, Skinner&#39;s &quot;Operant Conditioning&quot;) and Philosophy (e.g, &quot;Freedom, Equality, Property and Bentham&quot;). </li>
+<li>Ideas drawn from a wide range of contexts, including psychology (e.g, Skinner&#39;s &quot;Operant Conditioning&quot;) and Philosophy (e.g, &quot;Freedom, Equality, Property and Bentham&quot;). </li>
 </ul>
 </div>
 </div>
@@ -1789,6 +1792,7 @@ div.output_prompt {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="examples-of-reinforcement-learning">Examples of Reinforcement Learning</h2>
+<hr>
 <ul>
 <li>Play Backgammon/Chess/Go/Poker (at human or superhuman level)</li>
 <li>Hellicopter Control</li>
@@ -1807,10 +1811,11 @@ div.output_prompt {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="defining-mini-universes-1-">Defining Mini-Universes (1)</h2>
+<h2 id="the-markov-decision-process">The Markov Decision Process</h2>
+<hr>
 <ul>
 <li>The primary abstraction we are going to work in is the Markov Decision Process (MDP). </li>
-<li>MDPs capture the dynamics of a mini-world/universe that is populated by a single agent</li>
+<li>MDPs capture the dynamics of a mini-world/universe/environment</li>
 <li>An MDP is defined as a tuple $&lt;S,A,T,R,\gamma&gt;$ where: <ul>
 <li>$S$, $s \in S$ is a set of states</li>
 <li>$A$, $a \in A$ is a set of actions</li>
@@ -1822,27 +1827,12 @@ div.output_prompt {
 </ul>
 </div>
 </div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="defining-mini-universeses-2-">Defining Mini-Universeses (2)</h2>
-<ul>
-<li>An MDP can capture any universe that is inhabited either by exaclty one agent or that other agents are not adaptive</li>
-<li>States $s$ where $\forall a \in A T(s'|s,a) = 0$ are called <em>terminal</em> or <em>absorbing</em> (e.g., endgames) </li>
-<li>Markov Property ensures that we only care about the present in order to act, not past states</li>
-<li>e.g., All information in the Game of Checkers is captured by the board</li>
-</ul>
-</div>
-</div>
 </div><div style=display:none>
     
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[8]:
+In&nbsp;[25]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -1889,13 +1879,29 @@ In&nbsp;[8]:
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="policy">Policy</h2>
+<h2 id="the-markov-property-and-states">The Markov Property and States</h2>
+<hr>
 <ul>
-<li>Let&#39;s assume an agent inhabiting this universe</li>
-<li>You can take actions (e.g. move around, move blocks)</li>
-<li>The type of actions you take under a state is called the <em>policy</em></li>
-<li>$\pi_\theta: S \times A$, $\pi_\theta(s|a)$, a probabalistic mapping between states and actions, using parameters theta</li>
-<li>This is a more formalised version of the Reinforcement Learning Problem</li>
+<li>States represent sufficient statistics. </li>
+<li>Markov Property ensures that we only care about the present in order to act, not past states</li>
+<li>Think Tetris - All information are can be captured by a single screenshot</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>1984 Original Version</th>
+<th>1986 DOS Version </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="250px-Tetris-VeryFirstVersion.png" alt="Drawing" style="width: 300px;"></td>
+<td><img src="250px-Tetris_DOS_1986.png" alt="Drawing" style="width: 300px;"></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>States $s$ where $\forall a \in A T(s'|s,a) = 0$ are called <em>terminal</em> or <em>absorbing</em> (e.g., endgames) </li>
 </ul>
 </div>
 </div>
@@ -1908,22 +1914,134 @@ In&nbsp;[8]:
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="understanding-the-formalisms">Understanding the formalisms</h2>
+<h2 id="agents-actions-and-transitions">Agents, Actions and Transitions</h2>
+<hr>
 <ul>
-<li>See how the universe described by the MDP defines actions, not just states and transitions</li>
-<li>An agent needs to action upon what it perceives</li>
-<li>Notice the lack of body - &quot;brain in a vat&quot;. Body is assumed to be part of the world. </li>
+<li>An agent is an entity capable of actions</li>
+<li>An MDP can capture any environment that is inhabited either by exaclty one agent or that other agents are not adaptive</li>
+<li>Notice how actions are described by the MDP, which captures the world dynamics, not the agent</li>
+<li>In effect, the agent is just a &quot;brain in a vat&quot;, an action-selector</li>
+<li>The Agent perceives states/rewards and outputs actions</li>
+<li>Transitions specify the effects of actions in the world (e.g.,  in Tetris, you push a button, the block spings)</li>
 </ul>
-<p><img style="float:left" src="RL.png"></p>
 </div>
 </div>
-</div>
+</div></section>
+    </section><section>
+    <section>
+    
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="example-mdp-eagleworld">Example MDP - EagleWorld</h1>
+<h2 id="rewards-and-the-discount-factor">Rewards and the Discount Factor</h2>
+<hr>
+<ul>
+<li>Rewards describe state preferences</li>
+<li>Agent is happier in some states of the MDP (e.g. in Tetris when the block level is low - a fish in water)</li>
+<li>Punishment is just low/negative reward</li>
+<li>$\gamma$<ul>
+<li>the discount factor, describes the impact of time on rewards </li>
+<li>&quot;I want it now&quot;, the lower $\gamma$ is the less important future rewards are </li>
+</ul>
+</li>
+<li>There are no &quot;springs of rewards&quot; in the real world - &quot;human nature ?&quot;</li>
+</ul>
+</div>
+</div>
+</div></section>
+    </section><section>
+    <section>
+    
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="examples-of-reward-schemes">Examples of Reward Schemes</h2>
+<hr>
+<ul>
+<li>Scoring in most video games</li>
+<li>The distance a robot walked for a bipedal robot</li>
+<li>The amount of food an animal eats</li>
+<li>Money in modern societies</li>
+<li>Army Medals (&quot;Gamification&quot;) </li>
+<li>(- Fuel spend on a flight)(+ Distance Covered)</li>
+<li>Cold/Hot </li>
+</ul>
+</div>
+</div>
+</div></section>
+    </section><section>
+    <section>
+    
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="long-term-thinking">Long Term Thinking</h2>
+<ul>
+<li>It might be better to delay satisfaction</li>
+<li>Immidiate reward is not allways the maximum reward</li>
+<li>In some settings there are no immidiate rewards at all (e.g. some solitaire games) </li>
+<li>MDPs and RL capture this</li>
+<li>&quot;Not going out tonight, study&quot;</li>
+<li>Long term investement</li>
+</ul>
+</div>
+</div>
+</div></section>
+    </section><section>
+    <section>
+    
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="policy">Policy</h2>
+<hr>
+<ul>
+<li>The MDP (the universe) is populated by an Agent (an actor)</li>
+<li>You can take actions (e.g. move around, move blocks)</li>
+<li>The type of actions you take under a state is called the <em>policy</em></li>
+<li>$\pi_\theta: S \times A$, $\pi_\theta(s|a)$, a probabalistic mapping between states and actions, using parameters theta</li>
+<li>Finding an optimal policy is <em>mostly</em> what the RL problem is all about</li>
+</ul>
+</div>
+</div>
+</div></section>
+    </section><section>
+    <section>
+    
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="the-full-loop">The Full Loop</h2>
+<hr>
+<ul>
+<li>See how the universe described by the MDP defines actions, not just states and transitions</li>
+<li>An agent needs to action upon what it perceives</li>
+<li>Notice the lack of body - &quot;brain in a vat&quot;. Body is assumed to be part of the world. </li>
+</ul>
+<p><img style="float:centre" src="RL.png"></p>
+</div>
+</div>
+</div></section>
+    </section><section>
+    <section>
+    
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="example-mdp-eagleworld">Example MDP - EagleWorld</h2>
+<hr>
 <p><img style="float:left" src="MDPExample.png"></p>
 </div>
 </div>
@@ -1937,52 +2055,51 @@ In&nbsp;[8]:
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="agent-goals">Agent Goals</h2>
+<hr>
 <ul>
 <li><p>The agents goal is to maximise its long term reward $J(\theta) = \mathbb{E}_{\pi_{\theta}}\left[\sum\limits_{t=0}^\infty{\gamma^tR(s)}\right]$</p>
 </li>
 <li><p>$\underset{\theta}{\operatorname{argmax}}  J(\theta)$</p>
 </li>
-<li>Risk Neutral Agent </li>
+<li>Risk Neutral Agent - think of the EagleWorld Example</li>
 <li>Rewards can be anything, but most organisms receive rewards only in a very limited amount of states (e.g., fish in water)</li>
 <li>What if your reward signal is money ?</li>
 <li>Sociopathic, Egotistic, Greed-is-good Gordon Gecco</li>
 </ul>
 </div>
 </div>
-</div><div style=display:none>
+</div></section>
+    </section><section>
+    <section>
     
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="-review-questions-"><em>Review Questions</em></h2>
-<ol>
-<li>Give a brief, intuitive description of Reinforcment Learning. </li>
-<li>Define a Markov Decision Process.</li>
-<li>Define the policy of an agent.  </li>
-<li>Assume an MDP with with single state $s_0$ and two actions $a_0, a_1$. Assume a policy $\pi(s_0|a_0) = 0.3$, $\pi(s_0|a_1) = 0.7$. Briefly give an intuitive explanation of the policy in this setting. </li>
-<li>Assume an MDP with states $s_0, s_1, s_2$, $R(s_0) = 0$, $R(s_1) = 1$ and $R(s_2) = 0$ and actions $a_0,a_1$. Also assume transitions $T(s_1|s_0, a_0) = 1$, $T(s_2|s_0,a_1) = 1 $ and $T(s_1|s_1, a_0) = T(s_2|s_2, a_0) = 1$  <ol>
-<li>What should be the policy $\pi(s_0|a_0)$ and $\pi(s_0|a_1)$ ? </li>
-<li>How are states $s_0$ and $s_1$ called?</li>
-</ol>
-</li>
-</ol>
+<h2 id="exhaustive-search">Exhaustive Search</h2>
+<hr>
+<ul>
+<li>One can possibly </li>
+</ul>
 </div>
 </div>
-</div>
-    </div>
+</div></section>
+    </section><section>
+    <section>
+    
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="bellman-expectation-equations">Bellman Expectation Equations</h2>
+<hr>
 <ul>
 <li>There are the two most important functions related to an MDP </li>
 <li>Recursive definitions</li>
-<li>$V^\pi (s) = R(s) + \sum\limits_{a \in A}\pi(s|a)\left( \gamma\sum\limits_{s' \in S} T(s'|s,a) V^\pi(s')     \right)$ </li>
-<li>$Q^\pi (s,a) =  \gamma\sum\limits_{s' \in S} T(s'|s,a)R(s')\left(   \sum\limits_{a' \in A}\pi(a',s')Q(s',a')    \right)$ </li>
+<li>$ {V^\pi (s) = R(s) + \sum\limits_{a \in A}\pi(s|a)\left( \gamma\sum\limits_{s' \in S} T(s'|s,a) V^\pi(s')     \right)}$ </li>
+<li>${Q^\pi (s,a) =  \gamma\sum\limits_{s' \in S} T(s'|s,a)R(s')\left(   \sum\limits_{a' \in A}\pi(a',s')Q(s',a')    \right)}$ </li>
 <li>Called Q-Value(s) and V-Value(s) respectively</li>
 <li>They are also interrelated</li>
 <li>$Q^\pi(s,a) = \sum\limits_{s' \in S} T(s'|s,a) V^\pi(s')$</li>
@@ -1990,13 +2107,17 @@ In&nbsp;[8]:
 </ul>
 </div>
 </div>
-</div>
+</div></section>
+    </section><section>
+    <section>
+    
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="optimal-policy-and-the-bellman-optimality-equation">Optimal Policy and the Bellman Optimality Equation</h2>
+<hr>
 <ul>
 <li>An optimal policy can be defined in terms of Q-values</li>
 <li>It is the policy that maximises Q values</li>
@@ -2011,7 +2132,7 @@ In&nbsp;[8]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[15]:
+In&nbsp;[20]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -2033,23 +2154,105 @@ In&nbsp;[15]:
 </div>
 
 </div>
-    </div>
+    </div></section>
+    </section><section>
+    <section>
+    
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="example-mdp-eagleworld-2-">Example MDP - EagleWorld (2)</h1>
+<h2 id="example-mdp-eagleworld-2-">Example MDP - EagleWorld (2)</h2>
+<hr>
 <p><img style="float:left" src="MDPExample.png"></p>
 </div>
 </div>
+</div></section>
+    </section><section>
+    <section>
+    
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
 </div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="agents-revisited">Agents Revisited</h2>
+<hr>
+<ul>
+<li>An Agent can be composed of a number of things<ul>
+<li>A policy </li>
+<li>A Q-Value/and or V-Value Function</li>
+<li>A Model of the environment (the MDP)</li>
+</ul>
+</li>
+<li>An agent has to be able to create a policy either on the fly or using Q-Values </li>
+<li>The Model/Q/V-Values serve as intermediate points towards construcing a policy</li>
+</ul>
+</div>
+</div>
+</div></section>
+    </section><section>
+    <section>
+    
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="relationship-to-the-rest-of-machine-learning">Relationship to the rest of Machine Learning</h2>
+<hr>
+<ul>
+<li>How can one learn a model of the world ? <ul>
+<li>Possibly by breaking it down into smaller, abstract chunks<ul>
+<li>Unsupervised Learning</li>
+</ul>
+</li>
+<li>... and learning what effects ones actions have the envinroment<ul>
+<li>Supervised Learning</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>RL weaves all fields of Machine Learning (and possibly Artificial Intelligence) into one coherent whole</li>
+<li>The purpose of all learning is action!</li>
+</ul>
+</div>
+</div>
+</div><div style=display:none>
+    
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="-review-questions-"><em>Review Questions</em></h2>
+<hr>
+<ol>
+<li>Give a brief, intuitive description of Reinforcment Learning. </li>
+<li>Define a Markov Decision Process.</li>
+<li>Define the policy of an agent.  </li>
+<li>Assume an MDP with with single state $s_0$ and two actions $a_0, a_1$. Assume a policy $\pi(s_0|a_0) = 0.3$, $\pi(s_0|a_1) = 0.7$. Briefly give an intuitive explanation of the policy in this setting. </li>
+<li>Assume an MDP with states $s_0, s_1, s_2$, $R(s_0) = 0$, $R(s_1) = 1$ and $R(s_2) = 0$ and actions $a_0,a_1$. Also assume transitions $T(s_1|s_0, a_0) = 1$, $T(s_2|s_0,a_1) = 1 $ and $T(s_1|s_1, a_0) = T(s_2|s_2, a_0) = 1$  <ol>
+<li>What should be the policy $\pi(s_0|a_0)$ and $\pi(s_0|a_1)$ ? </li>
+<li>How are states $s_0$ and $s_1$ called?</li>
+</ol>
+</li>
+</ol>
+</div>
+</div>
+</div>
+    </div></section>
+    </section><section>
+    <section>
+    
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="model-based-reinforcement-learning">Model Based Reinforcement Learning</h2>
+<hr>
 <ul>
 <li>...also known as planning in certain contexts</li>
 <li>An agent has access to model, i.e. has a copy of the MDP (the outside world) in its brain</li>
@@ -2340,73 +2543,7 @@ In&nbsp;[7]:
 </div>
 
 </div>
-    </div><div style=display:none>
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">
-In&nbsp;[7]:
-</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class="highlight"><pre> 
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-    </div><div style=display:none>
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">
-In&nbsp;[7]:
-</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class="highlight"><pre> 
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-    </div><div style=display:none>
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">
-In&nbsp;[7]:
-</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class="highlight"><pre> 
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-    </div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">
-In&nbsp;[]:
-</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class="highlight"><pre> 
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div></section>
+    </div></section>
     </section>
 </div>
 </div>
@@ -2549,6 +2686,22 @@ Reveal.initialize({
 
 });
 
+</script>
+
+<script type="text/javascript">
+$(window).resize(function() {
+    if((window.fullScreen) || (window.innerWidth == screen.width && window.innerHeight == screen.height)) {
+        $("html").css("overflow", "hidden");
+    } else {
+        $("html").css("overflow", "auto");
+    }
+});
+
+$(document).ready(function(){
+    $(window).resize();
+    // trigger the function when the page loads
+    // if you have another $(document).ready(), simply add this line to it
+});
 </script>
 
 

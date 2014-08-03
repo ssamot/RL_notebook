@@ -1,3 +1,4 @@
+
 {%- extends 'slides_reveal.tpl' -%}
 
 
@@ -86,6 +87,22 @@ Reveal.initialize({
 
 });
 
+</script>
+
+<script type="text/javascript">
+$(window).resize(function() {
+    if((window.fullScreen) || (window.innerWidth == screen.width && window.innerHeight == screen.height)) {
+        $("html").css("overflow", "hidden");
+    } else {
+        $("html").css("overflow", "auto");
+    }
+});
+
+$(document).ready(function(){
+    $(window).resize();
+    // trigger the function when the page loads
+    // if you have another $(document).ready(), simply add this line to it
+});
 </script>
 
 {% endblock body %}
