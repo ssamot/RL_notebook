@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-<title>RL slides</title>
+<title>Notebook slides</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -1714,6 +1714,8 @@ div.output_prompt {
 
 </head>
 
+
+
 <body>
 <div class="reveal">
 <div class="slides">
@@ -1739,18 +1741,23 @@ div.output_prompt {
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="outline">Outline</h2>
 <ul>
-<li>Introduction
-<ul>
-<li>What is Reinforcment Learning (RL) ?</li>
+<li>Introduction<ul>
+<li>What is Reinforcement Learning (RL) ?</li>
 <li>Markov Decision Process (MDPs)</li>
-</ul></li>
-<li>Model-Based Reinforcement Learning
-<ul>
-<li>Value Iteration</li>
-<li>Policy Iteration</li>
-</ul></li>
-<li>Monte Carlo Methods</li>
-<li>Solving Black Jack using Monte Carlo Methods</li>
+</ul>
+</li>
+<li>Model-Based Reinforcement Learning<ul>
+<li>Value Iteration </li>
+<li>Policy Iteration </li>
+</ul>
+</li>
+<li>Model-Free Reinforcement Learning<ul>
+<li>Monte Carlo Control</li>
+<li>SARSA</li>
+<li>Q-Learning</li>
+</ul>
+</li>
+<li>Discussion, References, Further Reading</li>
 </ul>
 </div>
 </div>
@@ -1763,12 +1770,12 @@ div.output_prompt {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="what-is-reinforcment-learning">What is Reinforcment Learning?</h2>
+<h2 id="what-is-reinforcment-learning-">What is Reinforcment Learning? </h2>
 <ul>
 <li><em>Reinforcement learning is the study of how animals and artificial systems can learn to optimize their behavior in the face of rewards and punishments</em> -- Peter Dyan, Encyclopedia of Cognitive Science</li>
 <li>Not Supervised Learning - the animal/agent is not provided with examples of optimal behaviour, it has to be discovered!</li>
 <li>It subsumes most Artificial Intelligence problems. Forms the basis of most modern intelligent agents frameworks</li>
-<li>Ideas drawn from a wide range of contexts, inclusing psychology (e.g, Skinner's &quot;Operant Conditioning&quot;) and Philosophy (e.g, &quot;Freedom, Equality, Property and Bentham&quot;.</li>
+<li>Ideas drawn from a wide range of contexts, inclusing psychology (e.g, Skinner&#39;s &quot;Operant Conditioning&quot;) and Philosophy (e.g, &quot;Freedom, Equality, Property and Bentham&quot;). </li>
 </ul>
 </div>
 </div>
@@ -1787,7 +1794,7 @@ div.output_prompt {
 <li>Hellicopter Control</li>
 <li>Learn how to walk/crawl/swim</li>
 <li>Elevator Scheduling</li>
-<li>Optimising an petreulem refinery</li>
+<li>Optimising an petreulem refinery </li>
 </ul>
 </div>
 </div>
@@ -1800,20 +1807,33 @@ div.output_prompt {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="defining-mini-universes">Defining Mini-Universes</h2>
+<h2 id="defining-mini-universes-1-">Defining Mini-Universes (1)</h2>
 <ul>
-<li>The primary abstraction we are going to work in is the Markov Decision Process (MDP).</li>
+<li>The primary abstraction we are going to work in is the Markov Decision Process (MDP). </li>
 <li>MDPs capture the dynamics of a mini-world/universe that is populated by a single agent</li>
-<li>An MDP is defined as a tuple <span class="math">\(&lt;S,A,T,R,\gamma&gt;\)</span> where:
+<li>An MDP is defined as a tuple $&lt;S,A,T,R,\gamma&gt;$ where: <ul>
+<li>$S$, $s \in S$ is a set of states</li>
+<li>$A$, $a \in A$ is a set of actions</li>
+<li>$R:S$, $R(s)$ is a function that maps states to rewards</li>
+<li>$T:S\times S\times A$, with $T(s'| s, a)$ being the probability of an agent landing from state $s$ to state $s'$ if it takes action $a$</li>
+<li>$\gamma$ is a discount factor - the impact of time on rewards</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="defining-mini-universeses-2-">Defining Mini-Universeses (2)</h2>
 <ul>
-<li><span class="math">\(S\)</span>, <span class="math">\(s \in S\)</span> is a set of states</li>
-<li><span class="math">\(A\)</span>, <span class="math">\(a \in A\)</span> is a set of actions</li>
-<li><span class="math">\(R:S\)</span>, <span class="math">\(R(s)\)</span> is a function that maps states to rewards</li>
-<li><span class="math">\(T:S\times S\times A\)</span>, with <span class="math">\(T(s&#39;| s, a)\)</span> being the probability of an agent landing from state <span class="math">\(s\)</span> to state <span class="math">\(s&#39;\)</span> if it takes action <span class="math">\(a\)</span></li>
-<li><span class="math">\(\gamma\)</span> is a discount factor - the impact of time on rewards</li>
-</ul></li>
 <li>An MDP can capture any universe that is inhabited either by exaclty one agent or that other agents are not adaptive</li>
-<li>States <span class="math">\(s\)</span> where <span class="math">\(\forall a \in A T(s&#39;|s,a) = 0\)</span> are called <em>terminal</em> (e.g., endgames)</li>
+<li>States $s$ where $\forall a \in A T(s'|s,a) = 0$ are called <em>terminal</em> or <em>absorbing</em> (e.g., endgames) </li>
+<li>Markov Property ensures that we only care about the present in order to act, not past states</li>
+<li>e.g., All information in the Game of Checkers is captured by the board</li>
 </ul>
 </div>
 </div>
@@ -1822,7 +1842,7 @@ div.output_prompt {
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[112]:
+In&nbsp;[8]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -1871,10 +1891,10 @@ In&nbsp;[112]:
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="policy">Policy</h2>
 <ul>
-<li>Let's assume an agent inhabiting this universe</li>
+<li>Let&#39;s assume an agent inhabiting this universe</li>
 <li>You can take actions (e.g. move around, move blocks)</li>
 <li>The type of actions you take under a state is called the <em>policy</em></li>
-<li><span class="math">\(\pi_\theta: S \times A\)</span>, <span class="math">\(\pi_\theta(s|a)\)</span>, a probabalistic mapping between states and actions, using parameters theta</li>
+<li>$\pi_\theta: S \times A$, $\pi_\theta(s|a)$, a probabalistic mapping between states and actions, using parameters theta</li>
 <li>This is a more formalised version of the Reinforcement Learning Problem</li>
 </ul>
 </div>
@@ -1892,9 +1912,19 @@ In&nbsp;[112]:
 <ul>
 <li>See how the universe described by the MDP defines actions, not just states and transitions</li>
 <li>An agent needs to action upon what it perceives</li>
-<li>Notice the lack of body - &quot;brain in a vat&quot;. Body is assumed to be part of the world.</li>
+<li>Notice the lack of body - &quot;brain in a vat&quot;. Body is assumed to be part of the world. </li>
 </ul>
-<p><img style="float:left" src="feedback_loop.png"></p>
+<p><img style="float:left" src="RL.png"></p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="example-mdp-eagleworld">Example MDP - EagleWorld</h1>
+<p><img style="float:left" src="MDPExample.png"></p>
 </div>
 </div>
 </div></section>
@@ -1908,14 +1938,14 @@ In&nbsp;[112]:
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="agent-goals">Agent Goals</h2>
 <ul>
-<li>The agents goal is to maximise its long term reward</li>
-<li><span class="math">\(J(\theta) = \mathbb{E}_{\pi_{\theta}}\left[\sum\limits_{t=0}^\infty{R(s)}\right]\)</span></li>
-<li>Risk Neutral Agent</li>
-<li>Sociopath, Egotistic Gordon Gecco</li>
-<li><p>Rewards can be anything, but most organisms receive rewards only in a very limited amount of states (e.g., fish in water)</p></li>
-<li>For the moment let's also assume that you as an agent have a copy of the world in your head</li>
-<li>Pretty unlikely (how did it get there?) - but still possible</li>
-<li><p><em>Model Based Reinforcement</em> Learning</p></li>
+<li><p>The agents goal is to maximise its long term reward $J(\theta) = \mathbb{E}_{\pi_{\theta}}\left[\sum\limits_{t=0}^\infty{\gamma^tR(s)}\right]$</p>
+</li>
+<li><p>$\underset{\theta}{\operatorname{argmax}}  J(\theta)$</p>
+</li>
+<li>Risk Neutral Agent </li>
+<li>Rewards can be anything, but most organisms receive rewards only in a very limited amount of states (e.g., fish in water)</li>
+<li>What if your reward signal is money ?</li>
+<li>Sociopathic, Egotistic, Greed-is-good Gordon Gecco</li>
 </ul>
 </div>
 </div>
@@ -1926,23 +1956,117 @@ In&nbsp;[112]:
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="review-questions"><em>Review Questions</em></h2>
-<ol style="list-style-type: decimal">
-<li>What is Reinforcment Learning ?</li>
+<h2 id="-review-questions-"><em>Review Questions</em></h2>
+<ol>
+<li>Give a brief, intuitive description of Reinforcment Learning. </li>
 <li>Define a Markov Decision Process.</li>
-<li>What is a policy ?</li>
-<li>Assume an MDP with with single state <span class="math">\(s_0\)</span> and two actions <span class="math">\(a_0, a_1\)</span>. Assume a policy <span class="math">\(\pi(s_0|a_0) = 0.3\)</span>, <span class="math">\(\pi(s_0|a_1) = 0.7\)</span>. Briefly give an intuitive explanation of the policy in this setting.</li>
-<li>Assume an MDP with states <span class="math">\(s_0, s_1, s_2\)</span>, <span class="math">\(R(s_0) = 0\)</span>, <span class="math">\(R(s_1) = 1\)</span> and <span class="math">\(R(s_2) = 0\)</span> and actions <span class="math">\(a_0,a_1\)</span>. Also assume transitions <span class="math">\(T(s_1|s_0, a_0) = 1\)</span>, <span class="math">\(T(s_2|s_0,a_1) = 1 \)</span> and <span class="math">\(T(\cdot|s_1, \cdot) = 0\)</span> What should be the policy <span class="math">\(\pi(s_0|a_0)\)</span> and <span class="math">\(\pi(s_0|a_1)\)</span> ?</li>
+<li>Define the policy of an agent.  </li>
+<li>Assume an MDP with with single state $s_0$ and two actions $a_0, a_1$. Assume a policy $\pi(s_0|a_0) = 0.3$, $\pi(s_0|a_1) = 0.7$. Briefly give an intuitive explanation of the policy in this setting. </li>
+<li>Assume an MDP with states $s_0, s_1, s_2$, $R(s_0) = 0$, $R(s_1) = 1$ and $R(s_2) = 0$ and actions $a_0,a_1$. Also assume transitions $T(s_1|s_0, a_0) = 1$, $T(s_2|s_0,a_1) = 1 $ and $T(s_1|s_1, a_0) = T(s_2|s_2, a_0) = 1$  <ol>
+<li>What should be the policy $\pi(s_0|a_0)$ and $\pi(s_0|a_1)$ ? </li>
+<li>How are states $s_0$ and $s_1$ called?</li>
+</ol>
+</li>
 </ol>
 </div>
 </div>
 </div>
-    </div><div style=display:none>
+    </div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="bellman-expectation-equations">Bellman Expectation Equations</h2>
+<ul>
+<li>There are the two most important functions related to an MDP </li>
+<li>Recursive definitions</li>
+<li>$V^\pi (s) = R(s) + \sum\limits_{a \in A}\pi(s|a)\left( \gamma\sum\limits_{s' \in S} T(s'|s,a) V^\pi(s')     \right)$ </li>
+<li>$Q^\pi (s,a) =  \gamma\sum\limits_{s' \in S} T(s'|s,a)R(s')\left(   \sum\limits_{a' \in A}\pi(a',s')Q(s',a')    \right)$ </li>
+<li>Called Q-Value(s) and V-Value(s) respectively</li>
+<li>They are also interrelated</li>
+<li>$Q^\pi(s,a) = \sum\limits_{s' \in S} T(s'|s,a) V^\pi(s')$</li>
+<li>$V^\pi(s) =  \sum\limits_{a' \in A} \pi(s|a) Q^\pi(s,a)$</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="optimal-policy-and-the-bellman-optimality-equation">Optimal Policy and the Bellman Optimality Equation</h2>
+<ul>
+<li>An optimal policy can be defined in terms of Q-values</li>
+<li>It is the policy that maximises Q values</li>
+<li>$Q^*(s,a) = \max\limits_\pi Q(s,a)$</li>
+<li>$Q^*(s,a) = \gamma\sum\limits_{s' \in S} T(s'|s,a)R(s')\max\limits_a'Q(s',a')$</li>
+<li>$\pi^*(s,a) = \begin{cases} 1, &amp; \mbox{if } \mbox{ $a = \underset{a \in A}{\operatorname{argmax}}  Q^*(s,a)$} \\ 0, &amp; \mbox{if } \mbox{ otherwise} \end{cases}$</li>
+</ul>
+</div>
+</div>
+</div><div style=display:none>
     
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[113]:
+In&nbsp;[15]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">Q_value</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">mdp</span><span class="p">):</span>
+    <span class="s">&quot;The expected reward of doing action a in state s, according to the MDP and V.&quot;</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="n">p</span> <span class="o">*</span> <span class="n">V</span><span class="p">[</span><span class="n">s_prime</span><span class="p">]</span> <span class="k">for</span> <span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">s_prime</span><span class="p">)</span> <span class="ow">in</span> <span class="n">mdp</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">)])</span>
+
+<span class="k">def</span> <span class="nf">optimal_policy</span><span class="p">(</span><span class="n">mdp</span><span class="p">,</span> <span class="n">V</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Given an MDP and a value function V, determine the best policy,</span>
+<span class="sd">    as a mapping from state to action. (Equation 17.4)&quot;&quot;&quot;</span>
+    <span class="n">pi</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">mdp</span><span class="o">.</span><span class="n">states</span><span class="p">:</span>
+        <span class="n">pi</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">argmax</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">actions</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">:</span><span class="n">Q_value</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">mdp</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">pi</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+    </div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="example-mdp-eagleworld-2-">Example MDP - EagleWorld (2)</h1>
+<p><img style="float:left" src="MDPExample.png"></p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="model-based-reinforcement-learning">Model Based Reinforcement Learning</h2>
+<ul>
+<li>...also known as planning in certain contexts</li>
+<li>An agent has access to model, i.e. has a copy of the MDP (the outside world) in its brain</li>
+<li>Using that copy, it tries to &quot;think&quot; what is the best route of action</li>
+<li>It than executes this policy on the real world MDP</li>
+<li>You can&#39;t really copy the world inside your head, but you can copy the dynamics</li>
+<li>&quot;This and that will happen if I push the chair&quot;</li>
+<li>Thinking, introspection...</li>
+</ul>
+</div>
+</div>
+</div><div style=display:none>
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[12]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -1998,34 +2122,7 @@ In&nbsp;[113]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[114]:
-</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class="highlight"><pre><span class="k">def</span> <span class="nf">best_policy</span><span class="p">(</span><span class="n">mdp</span><span class="p">,</span> <span class="n">U</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Given an MDP and a utility function U, determine the best policy,</span>
-<span class="sd">    as a mapping from state to action. (Equation 17.4)&quot;&quot;&quot;</span>
-    <span class="n">pi</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">mdp</span><span class="o">.</span><span class="n">states</span><span class="p">:</span>
-        <span class="n">pi</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">argmax</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">actions</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">:</span><span class="n">expected_utility</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">U</span><span class="p">,</span> <span class="n">mdp</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">pi</span>
-
-<span class="k">def</span> <span class="nf">expected_utility</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">U</span><span class="p">,</span> <span class="n">mdp</span><span class="p">):</span>
-    <span class="s">&quot;The expected utility of doing a in state s, according to the MDP and U.&quot;</span>
-    <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="n">p</span> <span class="o">*</span> <span class="n">U</span><span class="p">[</span><span class="n">s1</span><span class="p">]</span> <span class="k">for</span> <span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">s1</span><span class="p">)</span> <span class="ow">in</span> <span class="n">mdp</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">)])</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-    </div><div style=display:none>
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">
-In&nbsp;[115]:
+In&nbsp;[13]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -2046,11 +2143,12 @@ In&nbsp;[115]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[116]:
+In&nbsp;[4]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
 <div class="highlight"><pre><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="c">#import numpy as np</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
 <span class="c"># Choose gray colormap</span>
 <span class="n">cmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s">&quot;gist_gray&quot;</span><span class="p">)</span>
@@ -2061,7 +2159,9 @@ In&nbsp;[116]:
 <span class="c"># create the image</span>
 <span class="n">cax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="n">cmap</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s">&quot;nearest&quot;</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="s">&#39;equal&#39;</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="n">extent</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s">&#39;lower&#39;</span><span class="p">)</span>
 <span class="c"># Add colorbar</span>
-<span class="n">cbar</span> <span class="o">=</span> <span class="n">colorbar</span><span class="p">(</span><span class="n">cax</span><span class="p">,</span> <span class="n">ticks</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">cbar</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">cax</span><span class="p">,</span> <span class="n">ticks</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">arrow</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.2</span><span class="p">,</span><span class="mf">0.0</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">arrow</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span><span class="mf">0.0</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 
@@ -2078,48 +2178,52 @@ In&nbsp;[116]:
 
 <div class="output_png output_subarea ">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAU8AAAD3CAYAAACdI9ZeAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
-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
+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
+SUVORK5CYII=
 "
 >
 </div>
@@ -2135,7 +2239,7 @@ BMBQPJTmru3faba7vdLtOAAAAAAAAAAAAAAAcJP8DzGDhpCbOmnNAAAAAElFTkSuQmCC
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[117]:
+In&nbsp;[5]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -2164,7 +2268,7 @@ In&nbsp;[117]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[118]:
+In&nbsp;[6]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -2180,16 +2284,17 @@ In&nbsp;[118]:
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">
-    Out[118]:</div>
-
-
-<div class="output_text output_subarea output_pyout">
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_text output_pyerr">
 <pre>
-[[&apos;&gt;&apos;, &apos;&gt;&apos;, &apos;&gt;&apos;, &apos;.&apos;], [&apos;^&apos;, &apos;^&apos;, &apos;^&apos;, &apos;.&apos;], [&apos;^&apos;, &apos;^&apos;, &apos;^&apos;, &apos;&lt;&apos;]]
-</pre>
-</div>
+<span class="ansired">---------------------------------------------------------------------------</span>
+<span class="ansired">NameError</span>                                 Traceback (most recent call last)
+<span class="ansigreen">&lt;ipython-input-6-dbb946b85988&gt;</span> in <span class="ansicyan">&lt;module&gt;</span><span class="ansiblue">()</span>
+<span class="ansigreen">----&gt; 1</span><span class="ansiyellow"> </span>policy <span class="ansiyellow">=</span> value_iteration<span class="ansiyellow">(</span>gmdp<span class="ansiyellow">)</span><span class="ansiyellow"></span>
+<span class="ansigreen">      2</span> gmdp<span class="ansiyellow">.</span>to_arrows<span class="ansiyellow">(</span>best_policy<span class="ansiyellow">(</span>gmdp<span class="ansiyellow">,</span> policy<span class="ansiyellow">)</span><span class="ansiyellow">)</span><span class="ansiyellow"></span>
 
+<span class="ansired">NameError</span>: name &apos;gmdp&apos; is not defined</pre>
+</div>
 </div>
 
 </div>
@@ -2201,7 +2306,7 @@ In&nbsp;[118]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[119]:
+In&nbsp;[7]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -2240,7 +2345,7 @@ In&nbsp;[119]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[119]:
+In&nbsp;[7]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -2257,7 +2362,7 @@ In&nbsp;[119]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[119]:
+In&nbsp;[7]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -2271,6 +2376,22 @@ In&nbsp;[119]:
 </div>
     </div><div style=display:none>
     
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[7]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre> 
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+    </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
@@ -2285,8 +2406,7 @@ In&nbsp;[]:
 </div>
 </div>
 
-</div>
-    </div></section>
+</div></section>
     </section>
 </div>
 </div>
@@ -2346,5 +2466,90 @@ Reveal.addEventListener( 'slidechanged', function( event ) {
 </script>
 
 </body>
+
+
+<script>
+
+Reveal.initialize({
+
+    // Display controls in the bottom right corner
+    controls: false,
+
+    // Display a presentation progress bar
+    progress: false,
+
+    // Display the page number of the current slide
+    slideNumber: true,
+
+    // Push each slide change to the browser history
+    history: false,
+
+    // Enable keyboard shortcuts for navigation
+    keyboard: true,
+
+    // Enable the slide overview mode
+    overview: true,
+
+    // Vertical centering of slides
+    center: true,
+
+    // Enables touch navigation on devices with touch input
+    touch: true,
+
+    // Loop the presentation
+    loop: false,
+
+    // Change the presentation direction to be RTL
+    rtl: false,
+
+    // Turns fragments on and off globally
+    fragments: true,
+
+    // Flags if the presentation is running in an embedded mode,
+    // i.e. contained within a limited portion of the screen
+    embedded: false,
+
+    // Number of milliseconds between automatically proceeding to the
+    // next slide, disabled when set to 0, this value can be overwritten
+    // by using a data-autoslide attribute on your slides
+    autoSlide: 0,
+
+    // Stop auto-sliding after user input
+    autoSlideStoppable: true,
+
+    // Enable slide navigation via mouse wheel
+    mouseWheel: false,
+
+    // Hides the address bar on mobile devices
+    hideAddressBar: true,
+
+    // Opens links in an iframe preview overlay
+    previewLinks: false,
+
+    // Transition style
+    transition: 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+    // Transition speed
+    transitionSpeed: 'default', // default/fast/slow
+
+    // Transition style for full page slide backgrounds
+    backgroundTransition: 'default', // default/none/slide/concave/convex/zoom
+
+    // Number of slides away from the current that are visible
+    viewDistance: 3,
+
+    // Parallax background image
+    parallaxBackgroundImage: '', // e.g. "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'"
+
+    // Parallax background size
+    parallaxBackgroundSize: '', // CSS syntax, e.g. "2100px 900px"
+
+    theme: 'beige', // available themes are in /css/theme
+
+
+});
+
+</script>
+
 
 </html>
