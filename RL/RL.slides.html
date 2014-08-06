@@ -2077,10 +2077,16 @@ In&nbsp;[25]:
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="exhaustive-search">Exhaustive Search</h2>
+<h2 id="searching-for-a-good-policy">Searching for a Good Policy</h2>
 <hr>
 <ul>
-<li>One can possibly </li>
+<li>One can possibly search through all combinations of policies until he finds the best</li>
+<li>Slow, does not work in larger MDPs</li>
+<li>Exploration/Exploitation Dillema<ul>
+<li>How much time/effort should be spend exploring for solutions</li>
+<li>How much time should be spend exploiting good solutions</li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -2166,6 +2172,27 @@ In&nbsp;[20]:
 <h2 id="example-mdp-eagleworld-2-">Example MDP - EagleWorld (2)</h2>
 <hr>
 <p><img style="float:left" src="MDPExample.png"></p>
+<center><font color='red'>$\pi(Flying, Attack\_Boar) = 1/3, \pi(Flying, Attack\_Turtle) = 1/3, \pi(Flying, Keep\_Flying) = 1/3$</font></center>
+<center><font color='red'>$Q(Flying, Attack\_Boar)   = 0.99 * (10 * 0.5 + 0.5* -1) = 4.455$</font></center>
+<center><font color='red'>$Q(Flying, Attack\_Turtle) = 0.99 * (0.9 * 3 + 0.1* -1) = 2.574$</font></center>
+<center><font color='red'>$Q^\pi(Flying, Keep\_Flying) = 0.99  (0.33  Q^\pi(Flying, Attack\_Turtle) + 0.33  Q(Flying, Attack\_Boar) + 0.33 Q(Flying, Keep\_Flying)$</font></center>
+</div>
+</div>
+</div></section>
+    </section><section>
+    <section>
+    
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="example-mdp-eagleworld-2-">Example MDP - EagleWorld (2)</h2>
+<hr>
+<p><img style="float:left" src="MDPExample.png"></p>
+<center><font color='red'>$Q(Flying, Attack\_Boar)   = 0.99 * (10 * 0.5 + 0.5* -1) = 4.455$</font></center>
+<center><font color='red'>$Q(Flying, Attack\_Turtle) = 0.99 * (0.9 * 3 + 0.1* -1) = 2.574$</font></center>
+<center><font color='red'>$Q^*(Flying, Keep\_Flying) = 0.99  (max ( Q^*(Flying, Attack\_Turtle) , Q(Flying, Attack\_Boar), Q(Flying, Keep\_Flying))$</font></center>
 </div>
 </div>
 </div></section>
@@ -2215,7 +2242,11 @@ In&nbsp;[20]:
 </ul>
 </li>
 <li>RL weaves all fields of Machine Learning (and possibly Artificial Intelligence) into one coherent whole</li>
-<li>The purpose of all learning is action!</li>
+<li>The purpose of all learning is action!<ul>
+<li>You need to be able to recognise faces so you can create state</li>
+<li>... and act on it</li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
