@@ -1742,12 +1742,19 @@ div.output_prompt {
 <h2 id="outline">Outline</h2>
 <hr>
 <ul>
+<li>Part I Introduction<ul>
 <li>Introduction &amp; Motivation<ul>
 <li>What is Reinforcement Learning (RL) ?</li>
 <li>Markov Decision Process (MDPs)</li>
-<li>Bellman Equations</li>
 </ul>
 </li>
+<li>Model-Based Reinforcement Learning<ul>
+<li>Bellman Backups</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Part II Iterative Methods<ul>
 <li>Model-Based Reinforcement Learning<ul>
 <li>Value Iteration </li>
 <li>Policy Iteration </li>
@@ -1759,7 +1766,12 @@ div.output_prompt {
 <li>Q-Learning</li>
 </ul>
 </li>
+</ul>
+</li>
+<li>Part III <ul>
 <li>Discussion, References, Further Reading</li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -1832,11 +1844,13 @@ div.output_prompt {
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[36]:
+In&nbsp;[1]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
-<div class="highlight"><pre><span class="k">class</span> <span class="nc">MDP</span><span class="p">:</span>
+<div class="highlight"><pre><span class="o">%</span><span class="k">load_ext</span> <span class="n">autoreload</span>
+
+<span class="k">class</span> <span class="nc">MDP</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;A Markov Decision Process, defined by an initial state, transition model,</span>
 <span class="sd">    and reward function. We also keep track of a gamma value, for use by</span>
 <span class="sd">    algorithms. We also keep track of the possible states, terminal states, and</span>
@@ -2046,7 +2060,7 @@ In&nbsp;[36]:
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="example-mdp-eagleworld">Example MDP - EagleWorld</h2>
 <hr>
-<p><img style="float:left" src="MDPExample.png"></p>
+<p><img style="float:left" src="MDPExample-simple.png"></p>
 </div>
 </div>
 </div></section>
@@ -2103,17 +2117,40 @@ In&nbsp;[36]:
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="bellman-expectation-equations">Bellman Expectation Equations</h2>
+<h2 id="model-based-reinforcement-learning">Model Based Reinforcement Learning</h2>
+<hr>
+<ul>
+<li>...also known as planning in certain contexts</li>
+<li>Who was doing the thinking in the previous example (You? The eagle ?)  </li>
+<li>An agent has access to model, i.e. has a copy of the MDP (the outside world) in its brain</li>
+<li>Using that copy, it tries to &quot;think&quot; what is the best route of action</li>
+<li>It than executes this policy on the real world MDP</li>
+<li>You can&#39;t really copy the world inside your head, but you can copy the dynamics</li>
+<li>&quot;This and that will happen if I push the chair&quot;</li>
+<li>Thinking, introspection...</li>
+</ul>
+</div>
+</div>
+</div></section>
+    </section><section>
+    <section>
+    
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="bellman-expectation-equations-bellman-backups">Bellman Expectation Equations / Bellman Backups</h2>
 <hr>
 <ul>
 <li>There are the two most important functions related to an MDP </li>
 <li>Recursive definitions</li>
-<li>$ {V^\pi (s) = R(s) + \sum\limits_{a \in A}\pi(s|a)\left( \gamma\sum\limits_{s' \in S} T(s'|s,a) V^\pi(s')     \right)}$ </li>
-<li>${Q^\pi (s,a) =  \gamma\sum\limits_{s' \in S} T(s'|s,a)R(s')\left(   \sum\limits_{a' \in A}\pi(a',s')Q(s',a')    \right)}$ </li>
+<li>$ {V^\pi (s) = R(s) + \sum\limits_{a \in A}\pi(s,a)\left( \gamma\sum\limits_{s' \in S} T(s'|s,a) V^\pi(s')     \right)}$ </li>
+<li>${Q^\pi (s,a) =  \gamma\sum\limits_{s' \in S} T(s'|s,a)\left(R(s') +   \sum\limits_{a' \in A}\pi(a',s')Q(s',a')    \right)}$ </li>
 <li>Called Q-Value(s) and V-Value(s) respectively</li>
 <li>They are also interrelated</li>
-<li>$Q^\pi(s,a) = \sum\limits_{s' \in S} T(s'|s,a) V^\pi(s')$</li>
-<li>$V^\pi(s) =  \sum\limits_{a' \in A} \pi(s|a) Q^\pi(s,a)$</li>
+<li>$Q^\pi(s,a) = \gamma\sum\limits_{s' \in S} T(s'|s,a) V^\pi(s')$</li>
+<li>$V^\pi(s) =  R(s) + \sum\limits_{a' \in A} \pi(s,a) Q^\pi(s,a)$</li>
 </ul>
 </div>
 </div>
@@ -2131,9 +2168,9 @@ In&nbsp;[36]:
 <ul>
 <li>An optimal policy can be defined in terms of Q-values</li>
 <li>It is the policy that maximises Q values</li>
-<li>$Q^*(s,a) = \max\limits_\pi Q(s,a)$</li>
-<li>$Q^*(s,a) = \gamma\sum\limits_{s' \in S} T(s'|s,a)R(s')\max\limits_a'Q(s',a')$</li>
-<li>$\pi^*(s,a) = \begin{cases} 1, &amp; \mbox{if } \mbox{ $a = \underset{a \in A}{\operatorname{argmax}}  Q^*(s,a)$} \\ 0, &amp; \mbox{if } \mbox{ otherwise} \end{cases}$</li>
+<li>$Q^*(s,a) = \gamma\sum\limits_{s' \in S} T(s'|s,a)R(s')\max\limits_{a'}Q(s',a')$</li>
+<li>$\pi^*(s,a) = \begin{cases} 1, &amp; \mbox{if } \mbox{ $a = \underset{a \in A}{\operatorname{argmax}}  Q^*(s,a)$} \\ 0, &amp;  \mbox{ otherwise} \end{cases}$</li>
+<li>$V^*(s) =  \sum\limits_{a' \in A} \pi^*(s,a) Q^\pi(s,a)$</li>
 </ul>
 </div>
 </div>
@@ -2142,7 +2179,7 @@ In&nbsp;[36]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[37]:
+In&nbsp;[2]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -2173,13 +2210,13 @@ In&nbsp;[37]:
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="example-mdp-eagleworld-2-">Example MDP - EagleWorld (2)</h2>
+<h2 id="example-mdp-eagleworld-random-policy">Example MDP - EagleWorld - Random Policy</h2>
 <hr>
-<p><img style="float:left" src="MDPExample.png"></p>
-<center><font color='red'>$\pi(Flying, Attack\_Boar) = 1/3, \pi(Flying, Attack\_Turtle) = 1/3, \pi(Flying, Keep\_Flying) = 1/3$</font></center>
+<p><img style="float:left" src="MDPExample-simple.png"></p>
+<center><font color='red'>$\pi(Flying, Attack\_Boar) = 0.5, \pi(Flying, Attack\_Turtle) = 0.5$</font></center>
 <center><font color='red'>$Q(Flying, Attack\_Boar)   = 0.99 * (10 * 0.5 + 0.5* -1) = 4.455$</font></center>
 <center><font color='red'>$Q(Flying, Attack\_Turtle) = 0.99 * (0.9 * 3 + 0.1* -1) = 2.574$</font></center>
-<center><font color='red'>$Q^\pi(Flying, Keep\_Flying) = 0.99  (0.33  Q^\pi(Flying, Attack\_Turtle) + 0.33  Q(Flying, Attack\_Boar) + 0.33 Q(Flying, Keep\_Flying)$</font></center>
+<center><font color='red'>$V^\pi(Flying) = 0.5  Q^\pi(Flying, Attack\_Turtle) + 0.5  Q(Flying, Attack\_Boar) = 3.5145 $</font></center>
 </div>
 </div>
 </div></section>
@@ -2191,13 +2228,13 @@ In&nbsp;[37]:
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="example-mdp-eagleworld-2-">Example MDP - EagleWorld (2)</h2>
+<h2 id="example-mdp-eagleworld-optimal-policy">Example MDP - EagleWorld - Optimal Policy</h2>
 <hr>
-<p><img style="float:left" src="MDPExample.png"></p>
+<p><img style="float:left" src="MDPExample-simple.png"></p>
 <center><font color='red'>$Q(Flying, Attack\_Boar)   = 0.99 * (10 * 0.5 + 0.5* -1) = 4.455$</font></center>
 <center><font color='red'>$Q(Flying, Attack\_Turtle) = 0.99 * (0.9 * 3 + 0.1* -1) = 2.574$</font></center>
-<center><font color='red'>$Q^*(Flying, Keep\_Flying) = 0.99  (max ( Q^*(Flying, Attack\_Turtle) , Q(Flying, Attack\_Boar), Q(Flying, Keep\_Flying))$</font></center>
-<center><font color='red'>$\pi(Flying,Attack\_Boar = 1)$</font></center>
+<center><font color='red'>$\pi^*(Flying, Attack\_Boar) = 1$, $\pi^*(Flying, Attack\_Turtle) = 0$ </font></center>
+<center><font color='red'>$V^*(Flying) = 0.0  Q^\pi(Flying) + 1.0  Q(Flying, Attack\_Boar) = 4.455 $</font></center>
 </div>
 </div>
 </div></section>
@@ -2257,7 +2294,9 @@ In&nbsp;[37]:
 </ul>
 </div>
 </div>
-</div><div style=display:none>
+</div></section>
+    </section><section>
+    <section>
     
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
@@ -2274,17 +2313,16 @@ In&nbsp;[37]:
 <li>What is an Optimal Policy ? </li>
 <li>Assume an MDP with with single state $s_0$ and two actions $a_0, a_1$. Assume a policy $\pi(s_0|a_0) = 0.3$, $\pi(s_0|a_1) = 0.7$. Briefly give an intuitive explanation of the policy in this setting. </li>
 <li>Assume an MDP with states $s_0, s_1, s_2$, $R(s_0) = 0$, $R(s_1) = 2$ and $R(s_2) = 1$ and actions $a_0,a_1$. Also assume transitions $T(s_1|s_0, a_0) = 1$, $T(s_2|s_0,a_1) = 1$. State $s_1,s_2$ are terminal  <ol>
-<li>What is Q(s_0,a_0) and Q(s_0,a_1) ? </li>
+<li>What is $Q(s_0,a_0)$ and $Q(s_0,a_1)$ ? </li>
 <li>What should be the policy $\pi(s_0|a_0)$ and $\pi(s_0|a_1)$ ? </li>
-<li>What is V(s_0) ? </li>
+<li>What is $V(s_0)$ ? </li>
 </ol>
 </li>
 <li>Think of a simple MDP and draw it. Does it have terminal states ? Can it be solved directly using Bellman Backups ? </li>
 </ol>
 </div>
 </div>
-</div>
-    </div></section>
+</div></section>
     </section><section>
     <section>
     
@@ -2293,18 +2331,71 @@ In&nbsp;[37]:
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="model-based-reinforcement-learning">Model Based Reinforcement Learning</h2>
+<h2 id="example-mdp-eagleworld-recursion">Example MDP - EagleWorld - Recursion</h2>
+<hr>
+<p><img style="float:left" src="MDPExample.png"></p>
+<center><font color='red'>$Q(Flying, Attack\_Boar)   = 0.99 * (10 * 0.5 + 0.5* -1) = 4.455$</font></center>
+<center><font color='red'>$Q(Flying, Attack\_Turtle) = 0.99 * (0.9 * 3 + 0.1* -1) = 2.574$</font></center>
+<center><font color='red'>$Q^*(Flying, Keep\_Flying) = 0.99  (max ( Q^*(Flying, Attack\_Turtle) , Q(Flying, Attack\_Boar), Q(Flying, Keep\_Flying))$</font></center>
+<center><font color='red'>$\pi(Flying,Attack\_Boar = 1)$</font></center>
+</div>
+</div>
+</div></section>
+    </section><section>
+    <section>
+    
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="gridworld-1-">GridWorld (1)</h2>
 <hr>
 <ul>
-<li>...also known as planning in certain contexts</li>
-<li>Who was doing the thinking in the previous example (You? The eagle ?)  </li>
-<li>An agent has access to model, i.e. has a copy of the MDP (the outside world) in its brain</li>
-<li>Using that copy, it tries to &quot;think&quot; what is the best route of action</li>
-<li>It than executes this policy on the real world MDP</li>
-<li>You can&#39;t really copy the world inside your head, but you can copy the dynamics</li>
-<li>&quot;This and that will happen if I push the chair&quot;</li>
-<li>Thinking, introspection...</li>
+<li>As we saw previously, when they are cycles in the MDP (which might happen quite often) it&#39;s not easy to calculate the Bellman backups directly</li>
+<li>An alternative is to used a method called <em>Policy Iteration</em></li>
+<li>Let&#39;s imagine an MDP full of loops - GridWorld<ul>
+<li>A simple world, partitioned in a grid</li>
+<li>Goal it to get to the upper right corner, and avoid the block right below it (both terminal states)</li>
+<li>Rewards -0.04 everywhere, except the two terminal states (+1, -1) respectively</li>
+<li>MDP Transtions as follow<ul>
+<li>$T(s\_action|\cdot, s\_action) = 0.8 $</li>
+<li>$T(s\_left|\cdot,s\_action) = 0.1 $</li>
+<li>$T(s\_right|\cdot,s\_action) = 0.1 $</li>
 </ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div></section>
+    </section><section>
+    <section>
+    
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="gridworld-2-">GridWorld (2)</h2>
+<hr>
+<table>
+<thead>
+<tr>
+<th>States/Rewards</th>
+<th>Actions  </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="grid.png"></td>
+<td>left, right, up, down</td>
+</tr>
+</tbody>
+</table>
+<p style='text-align: center;'><strong>Transitions</strong></p>
+<p style='text-align: center;'>$T(s\_action|\cdot, s\_action) = 0.8 \\ T(s\_left|\cdot,s\_action) = 0.1\\ T(s\_right|\cdot,s\_action) = 0.1 $</p>
 </div>
 </div>
 </div><div style=display:none>
@@ -2312,12 +2403,12 @@ In&nbsp;[37]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[403]:
+In&nbsp;[3]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
 <div class="highlight"><pre><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+
 
 
 <span class="k">class</span> <span class="nc">GridMDP</span><span class="p">(</span><span class="n">MDP</span><span class="p">):</span>
@@ -2349,64 +2440,7 @@ In&nbsp;[403]:
         <span class="n">state1</span> <span class="o">=</span> <span class="n">vector_add</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">direction</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">if_</span><span class="p">(</span><span class="n">state1</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">states</span><span class="p">,</span> <span class="n">state1</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">to_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mapping</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Convert a mapping from (x, y) to v into a [[..., v, ...]] grid.&quot;&quot;&quot;</span>
-        <span class="n">grid</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">):</span>
-            <span class="n">line</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cols</span><span class="p">):</span>
-                <span class="n">line</span> <span class="o">+=</span> <span class="p">[</span><span class="n">mapping</span><span class="p">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">]]</span><span class="c">#</span>
-            <span class="n">grid</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-                         
-        <span class="k">return</span> <span class="n">grid</span>
-              
-    <span class="k">def</span> <span class="nf">to_arrows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">policy</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Print text arrows from a policy.&quot;&quot;&quot;</span>
-        <span class="n">chars</span> <span class="o">=</span> <span class="p">{(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span><span class="s">&#39;v&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span><span class="s">&#39;&gt;&#39;</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span><span class="s">&#39;^&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span><span class="s">&#39;&lt;&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">:</span> <span class="s">&#39;.&#39;</span><span class="p">}</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_grid</span><span class="p">(</span><span class="nb">dict</span><span class="p">([(</span><span class="n">s</span><span class="p">,</span> <span class="n">chars</span><span class="p">[</span><span class="n">a</span><span class="p">])</span> <span class="k">for</span> <span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="ow">in</span> <span class="n">policy</span><span class="o">.</span><span class="n">items</span><span class="p">()]))</span>
     
-    <span class="k">def</span> <span class="nf">to_plt_arrows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">,</span> <span class="n">policy</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create an image from a values function and a policy .&quot;&quot;&quot;</span>
-        <span class="n">plt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_plt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_grid</span><span class="p">(</span><span class="n">values</span><span class="p">))</span>
-        <span class="n">chars</span> <span class="o">=</span> <span class="p">{(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">):(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.2</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">):(</span><span class="mf">0.2</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">):(</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mf">0.2</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):(</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="bp">None</span><span class="p">:</span> <span class="bp">None</span><span class="p">}</span>
-        <span class="c">#policy = dict([(s, chars[a]) for (s, a) in policy.items()])</span>
-        <span class="c">#print policy</span>
-        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">):</span>
-            <span class="n">line</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cols</span><span class="p">):</span>
-                <span class="c">#print x,y,  policy[x,y], &quot;policy&quot;</span>
-                <span class="n">val</span> <span class="o">=</span> <span class="n">chars</span><span class="p">[</span><span class="n">policy</span><span class="p">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">]]</span>
-                <span class="k">if</span><span class="p">(</span><span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">):</span>
-                    <span class="n">plt</span><span class="o">.</span><span class="n">arrow</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">val</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">hold</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
-                
-    
-    <span class="k">def</span> <span class="nf">to_plt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grid</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span> <span class="n">fig</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create an image from a grid, intensity representing reward .&quot;&quot;&quot;</span>
-        <span class="c">#import numpy as np</span>
-        <span class="k">if</span><span class="p">(</span><span class="n">grid</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">):</span>
-            <span class="n">grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
-        <span class="c"># Choose gray colormap</span>
-        <span class="n">cmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s">&quot;gist_gray&quot;</span><span class="p">)</span>
-        <span class="c"># Set ticks to the way we like them</span>
-        <span class="n">xticks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">yticks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">grid</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">xticks</span><span class="p">)</span> 
-        <span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="n">yticks</span><span class="p">)</span>
-        <span class="n">extent</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span> <span class="mf">0.5</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">-</span> <span class="mf">0.5</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">])</span> 
-        <span class="c"># create the image</span>
-        <span class="n">cax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="n">cmap</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s">&quot;nearest&quot;</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="s">&#39;equal&#39;</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="n">extent</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s">&#39;upper&#39;</span><span class="p">)</span>
-        <span class="c">#cax = plt.imshow(grid, cmap = cmap, interpolation=&quot;nearest&quot;)</span>
-
-        <span class="c"># Add colorbar</span>
-        <span class="n">cbar</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">cax</span><span class="p">,</span> <span class="n">ticks</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-        <span class="c">#plt.grid(True)</span>
-        <span class="k">for</span> <span class="n">tick</span> <span class="ow">in</span> <span class="n">xticks</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span> <span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">tick</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">tick</span> <span class="ow">in</span> <span class="n">yticks</span><span class="p">:</span> <span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">tick</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">hold</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">fig</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">):</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">plt</span>
 </pre></div>
 
 </div>
@@ -2419,7 +2453,7 @@ In&nbsp;[403]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[404]:
+In&nbsp;[4]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -2428,6 +2462,136 @@ In&nbsp;[404]:
         <span class="p">[</span><span class="o">-</span><span class="mf">0.04</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.04</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.04</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.04</span><span class="p">]]</span>
 <span class="n">terminals</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)]</span>
 <span class="n">gmdp</span> <span class="o">=</span> <span class="n">GridMDP</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span><span class="n">terminals</span><span class="o">=</span><span class="n">terminals</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">visualisation</span> <span class="kn">import</span> <span class="n">Visualiser</span>
+<span class="n">vsl</span> <span class="o">=</span> <span class="n">Visualiser</span><span class="p">()</span>
+<span class="n">plt</span> <span class="o">=</span> <span class="n">vsl</span><span class="o">.</span><span class="n">to_plt</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">fig</span> <span class="o">=</span> <span class="s">&quot;grid.png&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+AAAAAElFTkSuQmCC
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    </div></section>
+    </section><section>
+    <section>
+    
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="-modified-policy-iteration">(Modified) Policy Iteration</h2>
+<hr>
+<ul>
+<li>Policy Iteration is an iterative, model-based method for attacking any kind of MDP</li>
+<li>It does not make much sense in the case of finite MDPS without loops, use backups</li>
+<li>Loop until policy no further changes<ul>
+<li>Policy Evaluation: Find V-Values given a policy - start with a random policy<ul>
+<li>Loop over states for a fixed number of iterations</li>
+<li>For all states $s$<ul>
+<li>$ {V^{\pi_{n}} (s) = R(s) + \sum\limits_{a \in A}\pi_n(s,a)\left( \gamma\sum\limits_{s' \in S} T(s'|s,a) V^{\pi_n}(s')     \right)}$ </li>
+</ul>
+</li>
+<li>Don&#39;t recurse until the end - just do it for the immidate next state!</li>
+</ul>
+</li>
+<li>Policy Improvement: From new policy by acting greedily on Q-Values (infered from V-Values)<ul>
+<li>$\pi_{n+1}(s,a) = \begin{cases} 1, &amp; \mbox{if } \mbox{ $a = \underset{a \in A}{\operatorname{argmax}}  \sum\limits_{s' \in S} T(s'|s,a) V^{\pi_{n}}(s')$} \\ 0, &amp; \mbox{ otherwise} \end{cases}$</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div><div style=display:none>
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[5]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">policy_iteration</span><span class="p">(</span><span class="n">mdp</span><span class="p">):</span>
+    <span class="s">&quot;Solve an MDP by policy iteration [Fig. 17.7]&quot;</span>
+    <span class="n">V</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">mdp</span><span class="o">.</span><span class="n">states</span><span class="p">])</span>
+    <span class="n">pi</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">s</span><span class="p">,</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">actions</span><span class="p">(</span><span class="n">s</span><span class="p">)))</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">mdp</span><span class="o">.</span><span class="n">states</span><span class="p">])</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="n">V1</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">V1</span> <span class="o">=</span> <span class="n">policy_evaluation</span><span class="p">(</span><span class="n">pi</span><span class="p">,</span> <span class="n">V1</span><span class="p">,</span> <span class="n">mdp</span><span class="p">)</span>
+        <span class="n">unchanged</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">mdp</span><span class="o">.</span><span class="n">states</span><span class="p">:</span>   
+            <span class="n">a</span> <span class="o">=</span> <span class="n">argmax</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">actions</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">Q_value</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">V1</span><span class="p">,</span><span class="n">mdp</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">a</span> <span class="o">!=</span> <span class="n">pi</span><span class="p">[</span><span class="n">s</span><span class="p">]:</span>
+                <span class="n">pi</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span>
+                <span class="n">unchanged</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="n">unchanged</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">V1</span><span class="p">,</span> <span class="n">pi</span>
+
+<span class="k">def</span> <span class="nf">policy_evaluation</span><span class="p">(</span><span class="n">pi</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">mdp</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return V-Values, using an approximation (modified policy iteration).&quot;&quot;&quot;</span>
+    <span class="n">R</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">gamma</span> <span class="o">=</span> <span class="n">mdp</span><span class="o">.</span><span class="n">R</span><span class="p">,</span> <span class="n">mdp</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">mdp</span><span class="o">.</span><span class="n">gamma</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">mdp</span><span class="o">.</span><span class="n">states</span><span class="p">:</span>
+            <span class="n">V</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">R</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">+</span> <span class="n">gamma</span> <span class="o">*</span> <span class="nb">sum</span><span class="p">([</span><span class="n">p</span> <span class="o">*</span> <span class="n">V</span><span class="p">[</span><span class="n">s1</span><span class="p">]</span> <span class="k">for</span> <span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">s1</span><span class="p">)</span> <span class="ow">in</span> <span class="n">T</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">pi</span><span class="p">[</span><span class="n">s</span><span class="p">])])</span>
+    <span class="k">return</span> <span class="n">V</span>
+    
 </pre></div>
 
 </div>
@@ -2440,11 +2604,14 @@ In&nbsp;[404]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[406]:
+In&nbsp;[6]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
-<div class="highlight"><pre><span class="n">plt</span> <span class="o">=</span> <span class="n">gmdp</span><span class="o">.</span><span class="n">to_plt</span><span class="p">(</span><span class="n">fig</span> <span class="o">=</span> <span class="s">&quot;grid.png&quot;</span><span class="p">)</span>
+<div class="highlight"><pre><span class="n">gmdp</span> <span class="o">=</span> <span class="n">GridMDP</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span><span class="n">terminals</span><span class="o">=</span><span class="n">terminals</span><span class="p">)</span>
+<span class="n">values</span><span class="p">,</span> <span class="n">policy</span>  <span class="o">=</span> <span class="n">policy_iteration</span><span class="p">(</span><span class="n">gmdp</span><span class="p">)</span>
+<span class="n">vsl</span> <span class="o">=</span> <span class="n">Visualiser</span><span class="p">()</span>
+<span class="n">plt</span> <span class="o">=</span> <span class="n">vsl</span><span class="o">.</span><span class="n">to_plt_arrows</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">policy</span><span class="p">,</span> <span class="n">fig</span> <span class="o">=</span> <span class="s">&quot;grid_solved.png&quot;</span> <span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 
@@ -2460,51 +2627,60 @@ In&nbsp;[406]:
 
 
 <div class="output_png output_subarea ">
-<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAU8AAAD3CAYAAACdI9ZeAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
-AAALEgAACxIB0t1+/AAACZ9JREFUeJzt3E+IXfUZx+HvjDG0JaUIXRRl/mwULBRqW9zUIbNoIV2J
-iyKRbtyL0kWRySrZZLYu3Go3YiwoSEux4iKTTpBKbRWjSYoBk4wRs2laCS3FdG4Xd5yJNsncvPfc
-nHMmzwM3mTvenHlzEj/5nXt+SQIAAAAAAAAAAABAg55PcjHJibYHAeiThSQPRDwBbtp8Gojn9Phz
-ANx+xBOgQDyBXrnrrrsGSUZ9fDapOXZN6sAAk3Dp0qWsr6+P9Nrp6elvTmoOK0+gdwaDwUiPaziS
-5M0k9yVZS/J4dYap6g8EaMngypUrI71w165dyYQ657Id6J1RL9snSTyB3rnOJfktJZ5A74gnQIF4
-AhSIJ0CBeAIU7Ih4zszMDNbW1pqYBdjh9u7dm2PHjo2973JHbFVaW1vL0tJSE7OMZXV1NQsLC63O
-sLx8OEtLB1qdIXEurtaVc9GBhVIOHjyYgwcPtjrD1FQz+9V3xMoT4FYTT4AC8WzQ7Oxs2yN0hnOx
-xbnYsri42PYIjRHPBs3NzbU9Qmc4F1uciy3i2awdE0/g9iGeAAU7YqsSwK1m5QlQIJ4ABeIJUCCe
-AAXiCVAgngAFtioBFFh5AhSIJ0CBeAIUiCdAgXgCFLjbDlBg5QlQIJ4ABeIJUCCeAAXiCVAgngAF
-tioBFHRh5Tk9wmv2JTmd5MMkT092HIDtDQaDkR6TtN3K844kzyb5SZILSf6c5LdJTk10KoAb6MPK
-88EkZ5KcTfJ5kpeSPDzhmQBuqAsrz+3ieU+Stauef7zxOYDWdCGe2122j/TVV1dXNz+enZ3N3Nzc
-ODMBO8TKykpWVlYaP24XLtu3i+eFJDNXPZ/JcPX5JQsLC03OBOwQi4uLWVxc3Hx+6NChRo7bha1K
-2122v53k3iTzSXYneTTDG0YArenDZfuVJE8keT3DO+/PxZ12oGV9uGxPktc2HgCd0Jd4AnSKeAIU
-iCdAgXgCFHRhq5J4Ar1j5QlQIJ4ABeIJUCCeAAXiCVAgngAFtioBFFh5AhSIJ0CBeAIUiCdAgXgC
-FLjbDlBg5QlQIJ4ABeIJUCCeAAXiCVAgngAFtioBFFh5AhSIJ0CBeAIUiCfcJqamptoeYUfpQjyb
-+BUdJO3/RIA+mNr8ZgyDF198caQXPvbYY018vWtqZOW5tHSgicP03vLyYedig3OxZXn5cCb0/+9t
-y1YlgIIuXLaLJ9A74glQIJ4ABeIJUCCeAAXiCVBgqxJAgZUnQIF4AhSIJ0CBeAIUiCdAgXgCFNiq
-BFBg5QlQIJ4ABeIJUCCeAAXiCVDgbjtAgZUnQIF4AhSIJ0CBeAIUiCdAgXgCFHRhq9L0CK95PsnF
-JCcmPAvASAaDwUiP69iX5HSSD5M8XZ1hlHj+euOLAXTCGPG8I8mzGTbtu0n2J7m/MsMo8VxNcqly
-cIBJGCOeDyY5k+Rsks+TvJTk4coMo8QToFPGiOc9Sdauev7xxuduWiM3jFZXVzc/np2dzdzcXBOH
-Bbim672f+dFHH+Xs2bM3/KFNzdBIPBcWFpo4DMBIrhfP+fn5zM/Pbz4/duzYV19yIcnMVc9nMlx9
-3jRblYDeGWOr0ttJ7k0yn+STJI9meNPopo3ynueRJG8muS/D9woer3whgKaM8Z7nlSRPJHk9yckk
-v0lyqjLDKCvPUpUBJmXMv2H02sZjLC7bgd7x1zMBCsQToEA8AQrEE6CgC/+qkngCvWPlCVAgngAF
-4glQIJ4ABeIJUCCeAAW2KgEUWHkCFIgnQIF4AhSIJ0CBeAIUuNsOUGDlCVAgngAF4glQIJ4ABeIJ
-UCCeAAW2KgEUWHkCFIgnQIF4AhR0IZ5TDRxjkLT/EwH6YGrzmzEM9u/fP9ILjxw50sTXu6ZGVp5L
-SweaOEzvLS8fdi42OBdbnIsty8vNHKcLK0+X7UDv2KoEUGDlCVAgngAF4glQIJ4ABeIJUCCeAAW2
-KgEUWHkCFIgnQIF4AhSIJ0CBeAIUiCdAga1KAAVWngAF4glQIJ4ABeIJUCCeAAXutgMUWHkCFIgn
-QIF4AhSIJ0CBeAIUdCGe0yO8ZibJ0SQfJHk/yZMTnQhgG+vr6yM9JmmUlefnSX6Z5N0ke5L8Jckb
-SU5NcC6A6+rCynOUeH668UiSyxlG8+6IJ9CSvsTzavNJHkjyVvOjAIymb/Hck+TlJE9luALdtLq6
-uvnx7Oxs5ubmGhkO6Ldz587l/PnzjR+3T/G8M8krSV5I8upX/+PCwkKTMwE7xNzc3JcWU8ePH2/k
-uH2J51SS55KcTPLMZMcB2F5f4vnjJL9I8l6SdzY+t5TkD5MaCuBG+vKvKh3PaPtBAW6Jvqw8ATpF
-PAEKxBOgQDwBCsQToEA8AQr6slUJoFOsPAEKxBOgQDwBCsQToEA8AQrEE6DAViWAAitPgALxBCgQ
-T4AC8QQoEE+AAvEEKLBVCaDAyhOgQDwBCsQToEA8AQq6EM/ptgdoyrlz59oeoTOciy3OxZaddC7W
-19dHekzSjonn+fPn2x6hM5yLLc7Flp10LgaDwUiPSXLZDvROFy7bxRPonS7Ec6qBY6wk2dvAcYCd
-71iSxTGPMdizZ89IL7x8+XLSTOf+TxMrz8UGjgEwsi6sPF22A70jngAFXfiHQXbCVqV9SU4n+TDJ
-0y3P0qbnk1xMcqLtQTpgJsnRJB8keT/Jk+2O06qvJXkrybtJTiZZbnecZnRhq1Lf3ZHkTJL5JHdm
-+Bvk/jYHatFCkgcinknynSTf3/h4T5K/5fb9fZEk39j4fleSPyV5qMVZmjDYvXv3SI8kEyto31ee
-D2YYz7NJPk/yUpKH2xyoRatJLrU9REd8muEfpElyOcmpJHe3N07r/rXx/e4MFxx/b3GWRkxo5fnz
-DK9W/pvkB9u9uO/xvCfJ2lXPP974HHxhPsMV+Vstz9Gm6Qz/MLmY4dsZJ9sdZ3wTiueJJI8k+eMo
-L+77DSNvanAje5K8nOSpDFegt6v1DN/G+FaS1zPcXrjS4jxjm9D7madv5sV9X3leyPDmwBdmMlx9
-wp1JXknyQpJXW56lK/6Z5PdJftT2IOPqwg2jvq88305yb4aXZp8keTTJ/jYHohOmkjyX4eXpMy3P
-0rZvJ7mS5B9Jvp7kp0kOtTpRA8bYqvRGhjcUv+pAkt+VB+qpn2V4N/VMkqWWZ2nTkQz/APlPhu8D
-P97uOK16KMNL1XeTvLPx2NfqRO35XpK/Zngu3kvyq3bHacTgJh6fFY5/NCPcMALgy44m+WHbQwD0
-xSMZXrX9O8Ptbq+1Ow4AAAAAAAAAAAAAANwi/wMdiqYLkC5QywAAAABJRU5ErkJggg==
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUAAAAD7CAYAAAAb6k2oAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
+AAALEgAACxIB0t1+/AAAC4ZJREFUeJzt3X1sVfUdx/H31RYfUo0JmjSwEv/pFBKkJkCQbQKTmZKA
+orBkkCWDLC46jYYYg8uShf1hZkKID1nmXzhcjJoAA+NADZntFHUuReSpoq2RBOsD27QF0jhcufvj
+Vgazsxc8t79zz/f9Si60pT18cqBvzr0tLUiSJEmSJEmSJEmSJEmaNm1aGfDmzZu33N7mzJlTZgSl
+kV54lsodHR0ZHCY7GzZsYMWKFalnfMW8eXPZs2dv6hlneOyxx7jjjjtSzzjDtGnX0Nf3YeoZZ1i3
+bh333ntv6hlnmDhxAuUR363TWrNmDWvWrEk94wylUglG6N15Yz9FkvLBAEoKq5ABbGtrSz2hbkyf
+Pj31hLpw3XXXpZ5QN+bOnZt6QtUMYHAzZsxIPaEuzJ49O/WEumEAJakOGEBJYRlASWEZQElhGUBJ
+YRlASWEZQElhGUBJYRlASWEZQElhGUBJYRlASWEZQElhGUBJYRlASWEZQElhGUBJYRlASWEZQElh
+GUBJYRlASWEZQElhGUBJYRlASWEZQElhGUBJYVUTwHbgINADrK7tHEkaO6MF8Hzgt1QiOAVYBkyu
+9ShJGgujBXAm0AscAr4AngFurvEmSRoTowVwInD4tOc/GH5ZIX3++efs2LGD/v7+1FNy7/XXX6e7
+u5tyuZx6Sq719fWxfft2BgcHU0/RCBpG+fW6+9t94sQJli79IceOHT3nY5RK5zFr1vU88MCvKJVK
+Ga7Ll/Xrf8+jjz78jY5x+eUt/O5367jqqqsyWpU/vb29zJkz5xsdo6HhIu66607uu29VRquUhdEC
+2Ae0nPZ8C5WrwDNs2LDh1NNtbW20tbVlse2cNDY2smLFT3j//ffP+m0PHTrE/v37mTFjLjfd9INC
+xw9g9uxZ9PUtOae33bx5M5dd1syyZbfS0tIy+hvUsQkTJrBq1SqOHDly1m+7bds2+vv7Wbx4Ce3t
+82uwTiPp7Oyks7Nz1Ncb7T28AXgHuAH4EPgblQ+EvH3a65Q7OjrObWUOlcvlmoVv3ry57NmztybH
+Hmu1PE/Tpl1DX9+HNTl2CrU6VxMnTsBHIKozfP6/8ocw2hXgv4G7gBepfER4PWfGr3CKftWXFc9T
+9TxX+TVaAAGeH75JUqH4P0EkhWUAJYVlACWFZQAlhWUAJYVlACWFZQAlhWUAJYVlACWFZQAlhWUA
+JYVlACWFZQAlhWUAJYVlACWFZQAlhWUAJYVlACWFZQAlhWUAJYVlACWFZQAlhWUAJYVlACWFZQAl
+hWUAJYVlACWFZQAlhWUAJYVlACWFZQAlhWUAJYVlACWFVcrgGGUoZ3AYSaqV0qkfTteQxaGfe+5P
+WRym8BYtWkhHR2fqGbk3b95cXnqpI/WM3Pv+9+eRzTVMXN4FlhSWAZQUlgGUFJYBlBSWAZQUlgGU
+FJYBlBSWAZQUlgGUFJYBlBSWAZQUlgGUFJYBlBSWAZQUlgGUFJYBlBSWAZQUVuECODQ0xMGDB1PP
+qAu9vb0MDg6mnpF7g4ODvPfee6lnqAYKF8B9+/axevX9DAwMpJ6Sa+VymdWr17Bly7Opp+Teli3P
+cv/9v6Zc9nvfFE3hArht2585eXKInTt3pp6Sa++++y6fftrHxo1bU0/JvY0bt/LPf35AT09P6inK
+WOEC+Nln/wDgxImTiZfk27FjxwAYGDjilc3XKJfLHD36dwCOHj2aeI2yVrgA3n77TwG45ZZFiZfk
+2/Tp0wFYuHAhpZLfWez/KZVKLFy4EPjvOVNxFC6AklQtAygpLAMoKSwDKCksAygpLAMoKSwDKCks
+AygpLAMoKaxqAvg48Amwr8ZbJGlMVRPA3wPttR4iSWOtmgC+AnxW6yGSNNZ8DFBSWA1ZHOSpp546
+9fTUqVOZOnVqFoc9J83NzbS3L0j2+9eT2277GTNm+BVORrNo0SKamyeknqEayCSAy5cvz+IwmWhq
+auLOO3+eekZdWL58WeoJdaG1tZXW1tbUM1QD3gWWFFY1AXwaeA34NnAYWFnTRZI0Rqq5C+z9JEmF
+5F1gSWEZQElhGUBJYRlASWEZQElhGUBJYRlASWEZQElhGUBJYRlASWEZQElhGUBJYRlASWEZQElh
+GUBJYRlASWEZQElhGUBJYRlASWEZQElhGUBJYRlASWEZQElhGUBJYRlASWEZQElhGUBJYRlASWEZ
+QElhGUBJYRlASWEZQElhlTI4RhnKGRxGkmqldOqH0zVkceinn34mi8MU3rJlP2Lr1mdTz8i9xYtv
+ZvPmP6aekXtLltzKI488mnpGXbjnnpFf7l1gSWEZQElhGUBJYRlASWEZQElhGUBJYRlASWEZQElh
+GUBJYRlASWEZQElhGUBJYRlASWEZQElhGUBJYRlASWEZQElhFTKA5bJfor8anqfqea6KqXABPHLk
+CKtX/5KhoaHUU3LvgQfW0dXVlXpG7u3atYsHH3w49QzVQOEC+Oqrf+Xw4ffp7u5OPSXX+vv76ep6
+je3bX049Jfeef/5lurpeY2BgIPUUZaxwAXzxxR0AdHXtTrwk3/bs2QOc5M03X/bu3dcol8vs3r0T
+OMnevXtTz1HGChfAlSt/DMCSJYsTL8m3WbNmATB58mRKpSy+O2oxlUolrr76agBmzpyZeI2yVrgA
+XnHFFQBceumliZfk2wUXXABAS0tL4iX59+U5+vKcqTgKF0BJqpYBlBSWAZQUlgGUFJYBlBSWAZQU
+lgGUFJYBlBRWNQFsATqAA8B+4O6aLpKkMdJQxet8AawC3gKagF3ADuDtGu6SpJqr5grwYyrxAzhO
+JXwTarZIksbI2T4GeCVwLfBG9lMkpTQ0NMTBgwfZuHELx48fTz1nTFRzF/hLTcAm4B4qV4K5dPHF
+F6eeUDeami5h0qRJqWfk3qRJk2hquiT1jJoql8usXfsQH310GICdOzvP+Vhr165l3LhxGS2rrWoD
+2AhsBp4Etv7vL27atOnU01OmTGHKlCmZjDsXzc3NPPHEE8l+/3ry+OPraWxsTD0j9xYsWMD8+fNT
+z6ipUqnEbbetZNeu3bzyyqssWXIz48ePP+vjXHjhhbmIX09PD729vaO+XjUBLAHrgW5gxK8LvnTp
+0rMaV2t5+AOoB56n6pRKpRDnavz48dx443xuvLH+Y9/a2kpra+up51944YURX6+axwC/A/wYmAfs
+Hr61f/OJkpRWNVeAO/ETpiUVkGGTFJYBlBSWAZQUlgGUFJYBlBSWAZQUlgGUFJYBlBSWAZQUlgGU
+FJYBlBSWAZQUlgGUFJYBlBSWAZQUlgGUFJYBlBSWAZQUlgGUFJYBlBSWAZQUlgGUFJYBlBSWAZQU
+lgGUFJYBlBSWAZQUlgGUFJYBlBRWIQPY3d2dekLd2LdvX+oJdWH//v2pJ9SNnp6e1BOqZgCD8x27
+OgcOHEg9oW709vamnlC1QgZQkqphACWFVcrgGJ3AnAyOI0m18hdgbuoRkiRJkiQpM+3AQaAHWJ14
+S549DnwC+ImAX68F6AAOAPuBu9POya0LgTeAt4Bu4Ddp58R0PtALXAk0UvnDmJxyUI59D7gWAzia
+ZqBt+Okm4B38O/X/XDz8cwPwV+C7CbdUpWifBjOTSgAPAV8AzwA3pxyUY68An6UeUQc+pvIPKcBx
+4G1gQro5uTY4/PM4KhcjnybcUpWiBXAicPi05z8YfpmUhSupXDW/kXhHXp1H5R+LT6g8bJD7/5JV
+tACWUw9QYTUBm4B7qFwJ6qtOUnm44FvA9dTB590VLYB9VB60/lILlatA6ZtoBDYDTwJbE2+pBwPA
+NmB66iHRNADvUbmrMg4/CDKaK/GDIKMpAX8AHko9JOcuBy4bfvoi4GXghnRz4lpA5SN1vcAvEm/J
+s6eBD4F/UXncdGXaObn1XSp37d4Cdg/f2pMuyqepwJtUztNe4L60cyRJkiRJkiRJkiRJkiRJkiSp
+oP4D/tovHedZpMkAAAAASUVORK5CYII=
 "
 >
 </div>
@@ -2515,29 +2691,255 @@ xSMZXrX9O8Ptbq+1Ow4AAAAAAAAAAAAAANwi/wMdiqYLkC5QywAAAABJRU5ErkJggg==
 </div>
 
 </div>
-    </div><div style=display:none>
+    </div></section>
+    </section><section>
+    <section>
+    
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="discovered-policy-and-values">Discovered Policy and Values</h2>
+<hr>
+<table>
+<thead>
+<tr>
+<th>States/Rewards</th>
+<th>Actions  </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="grid_solved.png"></td>
+<td>left, right, up, down</td>
+</tr>
+</tbody>
+</table>
+<p style='text-align: center;'><strong>Transitions</strong></p>
+<p style='text-align: center;'>$T(s\_action|\cdot, s\_action) = 0.8 \\ T(s\_left|\cdot,s\_action) = 0.1\\ T(s\_right|\cdot,s\_action) = 0.1 $</p>
+</div>
+</div>
+</div></section>
+    </section><section>
+    <section>
+    
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="model-free-methods">Model Free Methods</h2>
+<hr>
+<ul>
+<li>We have assumed the agent has a copy of the MDP (a <em>model</em>) in its head</li>
+<li>This is rarely the case</li>
+<li>Generaly the agent can only interact with the envinroment</li>
+<li>i.e. the agent is imbued in a statistical bath of states, actions, trantisions and rewards</li>
+<li>How can the agent act then ? </li>
+</ul>
+</div>
+</div>
+</div></section>
+    </section><section>
+    <section>
+    
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="monte-carlo-control-1-">Monte Carlo Control (1)</h2>
+<hr>
+<ul>
+<li>This is the easiest, most sure to work method of all</li>
+<li>High Variance</li>
+<li>MC (Naive Version)<ul>
+<li>Start at any state, initialise $Q_0(s,a)$ as you visit states/actions </li>
+<li>Act $\epsilon$-greedily<ul>
+<li>$\pi^\epsilon(s,a) = \begin{cases} 1-\epsilon + \epsilon/|A| , &amp; \mbox{if } \mbox{ $a = \underset{a \in A}{\operatorname{argmax}}  Q_n(s,a)$} \\ \epsilon/|A|, &amp; \mbox{if } \mbox{ otherwise} \end{cases}$</li>
+</ul>
+</li>
+<li>Wait until episode ends</li>
+<li>Add all reward you have seen so far to $\mathrm{v_t^i}  = R_1+R_2+...R_t$ for episode $i$</li>
+<li>$Q_n(s,a) =  E_{\pi^\epsilon}[\mathrm{v_t}]  = \frac{1}{n}\sum\limits_{i=1}^{n}{\mathrm{v_t^i}} $, where $n$ is the times a state is visited  </li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div></section>
+    </section><section>
+    <section>
+    
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="monte-carlo-control-2-">Monte Carlo Control (2)</h2>
+<hr>
+<ul>
+<li>$\epsilon$-greedy means acting greedily $1-\epsilon$, random otherwise</li>
+<li>Since there the policy we follow will change over time, $Q(s,a)$ is not stationary</li>
+<li>Better to calculate mean incrementaly
+\begin{align*}
+Q_n(s,a) &amp;= E_{\pi^n}[\mathrm{v_t^i}]\\
+Q_n(s,a) &amp;= \frac{1}{n}\sum\limits_{i=1}^{n}{\mathrm{v_t^i}}\\
+Q_n(s,a) &amp;= \frac{1}{n}\left(\mathrm{v_t^1} + \mathrm{v_t^2}....\mathrm{v_t^{n-1}} +  \mathrm{v_t^n}\right)\\
+Q_n(s,a) &amp;= \frac{1}{n}\left(\sum\limits_{i=1}^{ n-1}{\mathrm{v_t^i}} +  \mathrm{v_t^n}\right)\\
+\end{align*}</li>
+</ul>
+</div>
+</div>
+</div></section>
+    </section><section>
+    <section>
+    
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="monte-carlo-control-3-">Monte Carlo Control (3)</h2>
+<hr>
+<p>by definition $Q_{n-1}(s,a) = \frac{1}{{n-1}}\sum\limits_{i=1}^{n-1}{\mathrm{v_t^i}} \implies (n-1)Q_{n-1}(s,a) =  \sum\limits_{i=1}^{n-1}{\mathrm{v_t^i}} $
+\begin{align*}
+Q_n(s,a) &amp;= \frac{1}{n}\left((n-1)Q_{n-1}(s,a) +  \mathrm{v_t^n}\right) \\
+Q_n(s,a) &amp;= \frac{1}{n}\left(Q_{n-1}(s,a)n - Q_{n-1}(s,a) + \mathrm{v_t^n}\right)\\
+Q_n(s,a) &amp;= \frac{Q_{n-1}(s,a)n}{n} + \frac{-Q_{n-1}(s,a) + \mathrm{v_t^n}}{n}\\
+Q_n(s,a) &amp;= Q_{n-1}(s,a) + \frac{\overbrace{\mathrm{v_t^n} - Q_{n-1}(s,a)}^{\textbf{MC-Error}} }{n}\\
+\end{align*}</p>
+</div>
+</div>
+</div></section>
+    </section><section>
+    <section>
+    
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="monte-carlo-control-putting-it-all-togeather">Monte Carlo Control - Putting it all togeather</h2>
+<hr>
+<ul>
+<li><p>But $pi^n$ changes continously, so the expectation is non-stationary
+\begin{align*}
+Q_n(s,a) &amp;= Q_{n-1}(s,a) + \frac{1}{n}\left[\mathrm{v_t^n} - Q_{n-1}(s,a) \right] \rightarrow \textbf{bandit case} \\
+Q_n(s,a) &amp;= Q_{n-1}(s,a) + \alpha\left[\mathrm{v_t^n} - Q_{n-1}(s,a) \right]  \rightarrow \textbf{Full MDP case}\\
+\end{align*}</p>
+</li>
+<li><p>$\alpha$ is a learning rate, usually set to a small value (e.g., 0.001)</p>
+</li>
+<li><p>MC</p>
+<ul>
+<li>Start at any state, initialise $Q_0(s,a)$ as you visit states/actions </li>
+<li>Act $\epsilon$-greedily<ul>
+<li>$\pi^\epsilon(s,a) = \begin{cases} 1-\epsilon + \epsilon/|A| , &amp; \mbox{if } \mbox{ $a = \underset{a \in A}{\operatorname{argmax}}  Q_n(s,a)$} \\ \epsilon/|A|, &amp; \mbox{if } \mbox{ otherwise} \end{cases}$</li>
+</ul>
+</li>
+<li>Wait until episode ends</li>
+<li>Add all reward you have seen so far to $\mathrm{v_t^i}  = R_1+R_2+...R_t$ for episode $i$</li>
+<li>$Q_n(s,a) = Q_{n-1}(s,a) + \alpha\left[\mathrm{v_t^n} - Q_{n-1}(s,a) \right]$</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div></section>
+    </section><section>
+    <section>
+    
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="simplified-blackjackworld">Simplified BlackJackWorld</h2>
+<hr>
+<ul>
+<li>We are going to use a simplified version of BlacJack, a popular card game, as an example</li>
+<li>Though it is possible to create a model, it&#39;s not that trivial, which makes it ideal for model-free methods</li>
+<li>Game Rules as follows<ul>
+<li>All cards have the face values, except J,Q,K that have a value of 10 and A that has a value of 11</li>
+<li>Goal of the game is to reach 21 - or if you have two aces 22 (that&#39;s a deviation from the original game)</li>
+<li>A player and a Dealer are dealt 2 cards each - the dealer keeps the second card hidden</li>
+<li>A player can &quot;stick&quot; - no more cards received or &quot;hit&quot; (get more cards)<ul>
+<li>If the score of 21 (or 22 in case of two aces) is passed, the player loses (reward -1)</li>
+<li>If the player has a higher score than the dealer, he wins (reward +1)</li>
+<li>If scores equal (reward 0)</li>
+</ul>
+</li>
+<li>Dealer has a fixed policy, if score less than 17, she has to draw more cards</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div><div style=display:none>
     
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[409]:
+In&nbsp;[11]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
-<div class="highlight"><pre><span class="k">def</span> <span class="nf">value_iteration</span><span class="p">(</span><span class="n">mdp</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">0.001</span><span class="p">):</span>
-    <span class="s">&quot;Solving an MDP by value iteration.&quot;</span>
-    <span class="c">#print mdp.states</span>
-    <span class="n">V1</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">mdp</span><span class="o">.</span><span class="n">states</span><span class="p">])</span>
-    <span class="n">R</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">gamma</span> <span class="o">=</span> <span class="n">mdp</span><span class="o">.</span><span class="n">R</span><span class="p">,</span> <span class="n">mdp</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">mdp</span><span class="o">.</span><span class="n">gamma</span>
-    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-        <span class="n">V</span> <span class="o">=</span> <span class="n">V1</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> 
-        <span class="n">delta</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">mdp</span><span class="o">.</span><span class="n">states</span><span class="p">:</span>
-            <span class="n">V1</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">R</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">+</span> <span class="n">gamma</span> <span class="o">*</span> <span class="nb">max</span><span class="p">([</span><span class="nb">sum</span><span class="p">([</span><span class="n">p</span> <span class="o">*</span> <span class="n">V</span><span class="p">[</span><span class="n">s1</span><span class="p">]</span> <span class="k">for</span> <span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">s1</span><span class="p">)</span> <span class="ow">in</span> <span class="n">T</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">)])</span>
-                                        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">mdp</span><span class="o">.</span><span class="n">actions</span><span class="p">(</span><span class="n">s</span><span class="p">)])</span>
-            <span class="n">delta</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="nb">abs</span><span class="p">(</span><span class="n">V1</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">-</span> <span class="n">V</span><span class="p">[</span><span class="n">s</span><span class="p">]))</span>
-        <span class="k">if</span> <span class="n">delta</span> <span class="o">&lt;</span> <span class="n">epsilon</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">gamma</span><span class="p">)</span> <span class="o">/</span> <span class="n">gamma</span><span class="p">:</span>
-             <span class="k">return</span> <span class="n">V</span>
+<div class="highlight"><pre><span class="kn">from</span> <span class="nn">blackjack</span> <span class="kn">import</span> <span class="n">SimpleBlackJack</span>
+
+
+
+<span class="k">class</span> <span class="nc">RLAgent</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;The top class of all RL agents .</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">learning_rate</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span> <span class="n">epsilon</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Q</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">learning_rate</span> <span class="o">=</span> <span class="n">learning_rate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span> <span class="o">=</span> <span class="n">epsilon</span>
+
+    <span class="k">def</span> <span class="nf">MC</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">visited_states</span><span class="p">,</span> <span class="n">actions</span><span class="p">,</span> <span class="n">rewards</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;&quot; Monte Carlo Control &quot;&quot;&quot;</span>
+        <span class="n">v_t</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">rewards</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">visited_states</span><span class="p">)):</span>
+            <span class="n">state</span> <span class="o">=</span> <span class="n">visited_states</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">action</span> <span class="o">=</span> <span class="n">actions</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="c">#if(state[0] == 4 and action == &quot;stick&quot;):</span>
+            <span class="c">#    print state, action, visited_states,actions, rewards</span>
+            <span class="n">state_action</span><span class="p">,</span> <span class="n">Q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Q</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">action</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Q</span><span class="p">[</span><span class="n">state_action</span><span class="p">]</span><span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">learning_rate</span><span class="o">*</span><span class="p">(</span><span class="n">v_t</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">Q</span><span class="p">[</span><span class="n">state_action</span><span class="p">]</span> <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">SARSA</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">previous_state</span><span class="p">,</span> <span class="n">previous_action</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">reward</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;&quot; SARSA(0) &quot;&quot;&quot;</span>
+        <span class="n">state_action</span><span class="p">,</span> <span class="n">Q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Q</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">action</span><span class="p">)</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">previous_state</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">):</span>
+            <span class="n">previous_Q</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">previous_state_action</span><span class="p">,</span> <span class="n">previous_Q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Q</span><span class="p">(</span><span class="n">previous_state</span><span class="p">,</span> <span class="n">previous_action</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Q</span><span class="p">[</span><span class="n">state_action</span><span class="p">]</span><span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">learning_rate</span><span class="o">*</span><span class="p">(</span><span class="n">reward</span> <span class="o">+</span> <span class="n">previous_Q</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">Q</span><span class="p">[</span><span class="n">state_action</span><span class="p">]</span> <span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">selectAction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">actions</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Select an action given a state and a vector of possible actions&quot;&quot;&quot;</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
+        <span class="k">if</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">actions</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">actions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">r</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">epsilon</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">actions</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">actions</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">action</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__Q</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="n">action</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">__Q</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">state</span><span class="p">,</span> <span class="n">action</span><span class="p">):</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">state</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">action</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">):</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="n">state_action</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">state</span> <span class="o">+</span> <span class="p">[</span><span class="n">action</span><span class="p">])</span>
+
+        <span class="k">if</span><span class="p">(</span><span class="n">state_action</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Q</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Q</span><span class="p">[</span><span class="n">state_action</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">return</span> <span class="n">state_action</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Q</span><span class="p">[</span><span class="n">state_action</span><span class="p">]</span>
 </pre></div>
 
 </div>
@@ -2550,13 +2952,17 @@ In&nbsp;[409]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[419]:
+In&nbsp;[10]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
-<div class="highlight"><pre><span class="n">values</span> <span class="o">=</span> <span class="n">value_iteration</span><span class="p">(</span><span class="n">gmdp</span><span class="p">)</span>
-<span class="n">policy</span> <span class="o">=</span>  <span class="n">optimal_policy</span><span class="p">(</span><span class="n">gmdp</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
-<span class="n">gmdp</span><span class="o">.</span><span class="n">to_plt_arrows</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">policy</span><span class="p">)</span>
+<div class="highlight"><pre><span class="n">blackjack</span> <span class="o">=</span> <span class="n">SimpleBlackJack</span><span class="p">()</span>
+<span class="n">agent</span> <span class="o">=</span> <span class="n">RLAgent</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+<span class="n">blackjack</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span><span class="mi">200000</span><span class="p">,</span><span class="n">episodic</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">visualisation</span> <span class="kn">import</span> <span class="n">Visualiser</span>
+<span class="n">vis</span> <span class="o">=</span> <span class="n">Visualiser</span><span class="p">()</span>
+<span class="n">vis</span><span class="o">.</span><span class="n">Q</span><span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">Q</span><span class="p">,</span> <span class="s">&quot;RL-MC.png&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -2571,70 +2977,63 @@ In&nbsp;[419]:
 
 
 <div class="output_png output_subarea ">
-<img src="data:image/png;base64,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
+<img src="data:image/png;base64,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
+QgghhDj8/B+3Nlhcmc/cUgAAAABJRU5ErkJggg==
 "
 >
 </div>
@@ -2645,175 +3044,52 @@ I0mSJEmSJEmSJEmSJEmSJElSP/k/Kx1shyi1yzQAAAAASUVORK5CYII=
 </div>
 
 </div>
-    </div><div style=display:none>
+    </div></section>
+    </section><section>
+    <section>
     
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
+<div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
-In&nbsp;[559]:
 </div>
 <div class="inner_cell">
-    <div class="input_area">
-<div class="highlight"><pre><span class="k">def</span> <span class="nf">policy_iteration</span><span class="p">(</span><span class="n">mdp</span><span class="p">):</span>
-    <span class="s">&quot;Solve an MDP by policy iteration [Fig. 17.7]&quot;</span>
-    <span class="n">U</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">mdp</span><span class="o">.</span><span class="n">states</span><span class="p">])</span>
-    <span class="n">pi</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">s</span><span class="p">,</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">actions</span><span class="p">(</span><span class="n">s</span><span class="p">)))</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">mdp</span><span class="o">.</span><span class="n">states</span><span class="p">])</span>
-    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-        <span class="n">U1</span> <span class="o">=</span> <span class="n">U</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">U1</span> <span class="o">=</span> <span class="n">policy_evaluation</span><span class="p">(</span><span class="n">pi</span><span class="p">,</span> <span class="n">U1</span><span class="p">,</span> <span class="n">mdp</span><span class="p">)</span>
-        <span class="n">unchanged</span> <span class="o">=</span> <span class="bp">True</span>
-        <span class="c">#print U1</span>
-        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">mdp</span><span class="o">.</span><span class="n">states</span><span class="p">:</span>   
-            <span class="n">a</span> <span class="o">=</span> <span class="n">argmax</span><span class="p">(</span><span class="n">mdp</span><span class="o">.</span><span class="n">actions</span><span class="p">(</span><span class="n">s</span><span class="p">),</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">Q_value</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">U1</span><span class="p">,</span><span class="n">mdp</span><span class="p">)</span> <span class="o">+</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span><span class="o">*</span><span class="mf">0.00000001</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">a</span> <span class="o">!=</span> <span class="n">pi</span><span class="p">[</span><span class="n">s</span><span class="p">]:</span>
-                <span class="n">pi</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span>
-                <span class="n">unchanged</span> <span class="o">=</span> <span class="bp">False</span>
-        <span class="k">if</span> <span class="n">unchanged</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">U1</span><span class="p">,</span> <span class="n">pi</span>
-
-<span class="k">def</span> <span class="nf">policy_evaluation</span><span class="p">(</span><span class="n">pi</span><span class="p">,</span> <span class="n">U</span><span class="p">,</span> <span class="n">mdp</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return an updated utility mapping U from each state in the MDP to its</span>
-<span class="sd">    utility, using an approximation (modified policy iteration).&quot;&quot;&quot;</span>
-    <span class="n">R</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">gamma</span> <span class="o">=</span> <span class="n">mdp</span><span class="o">.</span><span class="n">R</span><span class="p">,</span> <span class="n">mdp</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">mdp</span><span class="o">.</span><span class="n">gamma</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">mdp</span><span class="o">.</span><span class="n">states</span><span class="p">:</span>
-            <span class="n">U</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">R</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">+</span> <span class="n">gamma</span> <span class="o">*</span> <span class="nb">sum</span><span class="p">([</span><span class="n">p</span> <span class="o">*</span> <span class="n">U</span><span class="p">[</span><span class="n">s1</span><span class="p">]</span> <span class="k">for</span> <span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">s1</span><span class="p">)</span> <span class="ow">in</span> <span class="n">T</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">pi</span><span class="p">[</span><span class="n">s</span><span class="p">])])</span>
-    <span class="k">return</span> <span class="n">U</span>
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="blackjack-mc-results">Blackjack MC Results</h2>
+<hr>
+<p><img src="RL-MC.png"></p>
+<ul>
+<li>16 Onwards &quot;stick&quot;, less than that &quot;hit&quot;</li>
+<li>Is this correct - looks like it is</li>
+<li>Can you think of an adequete test ? </li>
+<li>What if there are not terminal states ? </li>
+</ul>
+</div>
+</div>
+</div></section>
+    </section><section>
+    <section>
     
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-    </div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
+<div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
-In&nbsp;[560]:
 </div>
 <div class="inner_cell">
-    <div class="input_area">
-<div class="highlight"><pre><span class="n">gmdp</span> <span class="o">=</span> <span class="n">GridMDP</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span><span class="n">terminals</span><span class="o">=</span><span class="n">terminals</span><span class="p">)</span>
-</pre></div>
-
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="sarsa-0-">SARSA(0)</h2>
+<hr>
+<ul>
+<li>Stands for State-Action-Reward-State-Action</li>
+<li>0 stands for a paramterer called $\lambda$, which we are going to ignore here</li>
+<li>Remember MC update rule <ul>
+<li>$Q_n(s,a) = Q_{n-1}(s,a) + \alpha\left[\mathrm{v_\tau^n} - Q_{n-1}(s,a) \right]$</li>
+<li>$Q_n(s,a) = Q_{n-1}(s,a) + \alpha\left[R(s') + \mathrm{v_{\tau}^n} - R(s')- Q_{n-1}(s,a) \right]$</li>
+</ul>
+</li>
+<li>But we can assume roughly that $\mathrm{v_{\tau}^n}  \approx Q_{n-1}(s',a') + R(s') \Leftrightarrow \mathrm{v_{\tau}^n} - R(s') \approx Q_{n-1}(s',a')$ <ul>
+<li>$Q_n(s,a) = Q_{n-1}(s,a) + \alpha\left[R(s') + Q_{n-1}(s',a') - Q_{n-1}(s,a) \right]$</li>
+</ul>
+</li>
+</ul>
 </div>
 </div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">
-In&nbsp;[562]:
-</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class="highlight"><pre><span class="n">values</span><span class="p">,</span> <span class="n">policy</span>  <span class="o">=</span> <span class="n">policy_iteration</span><span class="p">(</span><span class="n">gmdp</span><span class="p">)</span>
-<span class="n">gmdp</span><span class="o">.</span><span class="n">to_plt_arrows</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">policy</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-
-
-<div class="output_png output_subarea ">
-<img src="data:image/png;base64,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
-"
->
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">
-In&nbsp;[561]:
-</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class="highlight"><pre> 
-</pre></div>
-
-</div>
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
@@ -2822,7 +3098,13 @@ In&nbsp;[]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
-<div class="highlight"><pre> 
+<div class="highlight"><pre><span class="n">blackjack</span> <span class="o">=</span> <span class="n">SimpleBlackJack</span><span class="p">()</span>
+<span class="n">agent</span> <span class="o">=</span> <span class="n">RLAgent</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+<span class="n">blackjack</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span><span class="mi">200000</span><span class="p">,</span><span class="n">episodic</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">visualisation</span> <span class="kn">import</span> <span class="n">Visualiser</span>
+<span class="n">vis</span> <span class="o">=</span> <span class="n">Visualiser</span><span class="p">()</span>
+<span class="n">vis</span><span class="o">.</span><span class="n">Q</span><span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">Q</span><span class="p">,</span> <span class="s">&quot;RL-SARSA.png&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>

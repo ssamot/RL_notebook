@@ -75,7 +75,7 @@ class SimpleBlackJack:
         sum_player = self.sum(self.player_cards)
         sum_dealer = self.sum(self.dealer_cards)
 
-        while(sum_dealer < 17 ):
+        while(sum_dealer < 17 and sum_dealer < sum_player):
             self.dealer_cards +=[self.deck.pop()]
             sum_dealer = self.sum(self.dealer_cards)
 
@@ -116,8 +116,9 @@ class SimpleBlackJack:
             while(not self.reached_terminal):
 
                 state =  self.getState()
+                #print possible_actions
                 action = agent.selectAction(state, possible_actions)
-                #print visited_states, actions, self.player_cards
+
                 assert(state[0] <= 22)
 
                 if(action == "deal"):
@@ -129,15 +130,17 @@ class SimpleBlackJack:
                 if(action == "hit"):
                     R = self.hit()
 
-                if(not episodic and previous_state):
-                    agent.SARSA(previous_state, previous_action, state, action, R)
-                elif( len(possible_actions) != 1 ):
+                if( action !="deal"):
+                    if(episodic):
+                        visited_states.append(state)
+                        actions.append(action)
+                        rewards.append(R)
+                    else:
+                        if(previous_action!= "deal"):
+                            agent.SARSA(previous_state, previous_action, state, action, R)
 
-                    visited_states.append(state)
-                    actions.append(action)
-                    rewards.append(R)
-                    #if(state[0] == 20):
-                    #     print visited_states, actions, self.sum(self.player_cards), self.reached_terminal, rewards, self.sum(self.dealer_cards)
+                    #if(state[0] == 22 and action == "hit"):
+                    #      print visited_states, actions, self.sum(self.player_cards), self.reached_terminal, rewards, self.sum(self.dealer_cards)
                 possible_actions = ["stick", "hit"]
                 previous_state = state
                 previous_action = action
@@ -145,6 +148,8 @@ class SimpleBlackJack:
             if(episodic):
                 #print visited_states, actions
                 agent.MC(visited_states,actions,rewards)
+            if(previous_action!= "deal"):
+                agent.SARSA(previous_state, previous_action, None, action, R)
             self.player_cards = []
             self.dealer_cards = []
             self.reached_terminal = False
@@ -164,16 +169,24 @@ class RLAgent():
     def MC(self,visited_states, actions, rewards):
         """" Monte Carlo Control """
         v_t = sum(rewards)
-        for state in visited_states:
-            for action in actions:
-                state_action, Q = self.__Q(state, action)
-                self.Q[state_action]+= self.learning_rate*(v_t - self.Q[state_action] )
 
-    def SARSA(self, previous_state, previous_action, state, action, reward):
+        for i in range(len(visited_states)):
+            state = visited_states[i]
+            action = actions[i]
+            #if(state[0] == 4 and action == "stick"):
+            #    print state, action, visited_states,actions, rewards
+            state_action, Q = self.__Q(state, action)
+            self.Q[state_action]+= self.learning_rate*(v_t - self.Q[state_action] )
+
+    def SARSA(self, previous_state, previous_action, state, action, next_reward):
         """" SARSA(0) """
-        state_action, Q = self.__Q(state, action)
+        if(state is None):
+            Q = 0
+        else:
+            state_action, Q = self.__Q(state, action)
         previous_state_action, previous_Q = self.__Q(previous_state, previous_action)
-        self.Q[state_action]+= self.learning_rate*(reward + previous_Q - self.Q[state_action] )
+        #self.Q[state_action]+= self.learning_rate*(reward + previous_Q - self.Q[state_action] )
+        self.Q[previous_state_action]+= self.learning_rate*(next_reward + Q - self.Q[previous_state_action]  )
 
 
     def selectAction(self, state, actions):
@@ -205,7 +218,13 @@ if __name__=="__main__":
     blackjack = SimpleBlackJack()
     agent = RLAgent(learning_rate=0.01, epsilon=0.01)
     blackjack.simulate(agent,200000,episodic=False)
-    print agent.Q
+
+    from visualisation import Visualiser
+    vis = Visualiser()
+    vis.Q(agent.Q, fig = "test.png")
+    #print agent.Q
+
+
 
 
 
