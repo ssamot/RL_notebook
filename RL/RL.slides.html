@@ -1727,7 +1727,9 @@ div.output_prompt {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="reinforcement-learning">Reinforcement Learning</h1>
+<h1 id="-center-reinforcement-learning-center-"><center> Reinforcement Learning </center> </h1>
+<h2 id="-center-ce802-center-"><center> CE802 </center> </h2>
+<center> <strong>Spyridon Samothrakis</strong> </center> 
 </div>
 </div>
 </div></section>
@@ -1742,12 +1744,9 @@ div.output_prompt {
 <h2 id="outline">Outline</h2>
 <hr>
 <ul>
-<li>Part I Introduction<ul>
-<li>Introduction &amp; Motivation<ul>
-<li>What is Reinforcement Learning (RL) ?</li>
+<li>Part I Introduction <ul>
+<li>Introduction &amp; Motivation</li>
 <li>Markov Decision Process (MDPs)</li>
-</ul>
-</li>
 <li>Model-Based Reinforcement Learning<ul>
 <li>Bellman Backups</li>
 </ul>
@@ -1789,8 +1788,9 @@ div.output_prompt {
 <ul>
 <li><em>Reinforcement learning is the study of how animals and artificial systems can learn to optimize their behavior in the face of rewards and punishments</em> -- Peter Dyan, Encyclopedia of Cognitive Science</li>
 <li>Not Supervised Learning - the animal/agent is not provided with examples of optimal behaviour, it has to be discovered!</li>
-<li>It subsumes most Artificial Intelligence problems. Forms the basis of most modern intelligent agents frameworks</li>
-<li>Ideas drawn from a wide range of contexts, including psychology (e.g, Skinner&#39;s &quot;Operant Conditioning&quot;) and Philosophy (e.g, &quot;Freedom, Equality, Property and Bentham&quot;), neuroscience, operations research  </li>
+<li>It subsumes most Artificial Intelligence problems </li>
+<li>Forms the basis of most modern intelligent agent frameworks</li>
+<li>Ideas drawn from a wide range of contexts, including psychology (e.g, Skinner&#39;s &quot;Operant Conditioning&quot;) and Philosophy (e.g, Marx&#39; &quot;Freedom, Equality, Property and Bentham&quot;), neuroscience, operations research  </li>
 </ul>
 </div>
 </div>
@@ -1826,13 +1826,13 @@ div.output_prompt {
 <h2 id="the-markov-decision-process">The Markov Decision Process</h2>
 <hr>
 <ul>
-<li>The primary abstraction we are going to work in is the Markov Decision Process (MDP). </li>
+<li>The primary abstraction we are going to work with is the Markov Decision Process (MDP). </li>
 <li>MDPs capture the dynamics of a mini-world/universe/environment</li>
 <li>An MDP is defined as a tuple $&lt;S,A,T,R,\gamma&gt;$ where: <ul>
 <li>$S$, $s \in S$ is a set of states</li>
 <li>$A$, $a \in A$ is a set of actions</li>
 <li>$R:S$, $R(s)$ is a function that maps states to rewards</li>
-<li>$T:S\times S\times A$, with $T(s'| s, a)$ being the probability of an agent landing from state $s$ to state $s'$ if it takes action $a$</li>
+<li>$T:S\times S\times A$, with $T(s'| s, a)$ being the probability of an agent landing from state $s$ to state $s'$ after taking $a$</li>
 <li>$\gamma$ is a discount factor - the impact of time on rewards</li>
 </ul>
 </li>
@@ -1844,13 +1844,11 @@ div.output_prompt {
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[4]:
+In&nbsp;[1]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
-<div class="highlight"><pre><span class="o">%</span><span class="k">load_ext</span> <span class="n">autoreload</span>
-
-<span class="k">class</span> <span class="nc">MDP</span><span class="p">:</span>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">MDP</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;A Markov Decision Process, defined by an initial state, transition model,</span>
 <span class="sd">    and reward function. We also keep track of a gamma value, for use by</span>
 <span class="sd">    algorithms. We also keep track of the possible states, terminal states, and</span>
@@ -1901,7 +1899,7 @@ In&nbsp;[4]:
 <hr>
 <ul>
 <li>States represent sufficient statistics. </li>
-<li>Markov Property ensures that we only care about the present in order to act, not past states</li>
+<li>Markov Property ensures that we only care about the present in order to act - we can safely ignore past states</li>
 <li>Think Tetris - All information are can be captured by a single screenshot</li>
 </ul>
 <table>
@@ -1938,9 +1936,9 @@ In&nbsp;[4]:
 <li>An agent is an entity capable of actions</li>
 <li>An MDP can capture any environment that is inhabited either by exaclty one agent or that other agents are not adaptive</li>
 <li>Notice how actions are described by the MDP, which captures the world dynamics, not the agent</li>
-<li>In effect, the agent is just a &quot;brain in a vat&quot;, an action-selector</li>
-<li>The Agent perceives states/rewards and outputs actions</li>
-<li>Transitions specify the effects of actions in the world (e.g.,  in Tetris, you push a button, the block spings)</li>
+<li>In effect, the agent is just a &quot;brain in a vat&quot;</li>
+<li>The agent perceives states/rewards and outputs actions</li>
+<li>Transitions specify the effects of actions in the world (e.g.,  in Tetris, you push a button, the block spins)</li>
 </ul>
 </div>
 </div>
@@ -1957,14 +1955,14 @@ In&nbsp;[4]:
 <hr>
 <ul>
 <li>Rewards describe state preferences</li>
-<li>Agent is happier in some states of the MDP (e.g. in Tetris when the block level is low - a fish in water)</li>
+<li>Agent is happier in some states of the MDP (e.g., in Tetris when the block level is low, a fish in water)</li>
 <li>Punishment is just low/negative reward</li>
 <li>$\gamma$<ul>
 <li>the discount factor, describes the impact of time on rewards </li>
 <li>&quot;I want it now&quot;, the lower $\gamma$ is the less important future rewards are </li>
 </ul>
 </li>
-<li>There are no &quot;springs of rewards&quot; in the real world - &quot;human nature ?&quot;</li>
+<li>There are no &quot;springs/wells of rewards&quot; in the real world - &quot;human nature&quot; ?</li>
 </ul>
 </div>
 </div>
@@ -2003,7 +2001,7 @@ In&nbsp;[4]:
 <ul>
 <li>It might be better to delay satisfaction</li>
 <li>Immidiate reward is not allways the maximum reward</li>
-<li>In some settings there are no immidiate rewards at all (e.g. some solitaire games) </li>
+<li>In some settings there are no immidiate rewards at all (e.g. most solitaire games) </li>
 <li>MDPs and RL capture this</li>
 <li>&quot;Not going out tonight, study&quot;</li>
 <li>Long term investement</li>
@@ -2022,10 +2020,10 @@ In&nbsp;[4]:
 <h2 id="policy">Policy</h2>
 <hr>
 <ul>
-<li>The MDP (the universe) is populated by an Agent (an actor)</li>
-<li>You can take actions (e.g. move around, move blocks)</li>
+<li>The MDP (the world) is populated by an agent (an actor)</li>
+<li>You can take actions (e.g., move around, move blocks)</li>
 <li>The type of actions you take under a state is called the <em>policy</em></li>
-<li>$\pi_\theta: S \times A$, $\pi_\theta(s|a)$, a probabalistic mapping between states and actions, using parameters theta</li>
+<li>$\pi: S \times A$, $\pi(s,a) = P(s|a)$, a probabalistic mapping between states and actions</li>
 <li>Finding an optimal policy is <em>mostly</em> what the RL problem is all about</li>
 </ul>
 </div>
@@ -2075,14 +2073,17 @@ In&nbsp;[4]:
 <h2 id="agent-goals">Agent Goals</h2>
 <hr>
 <ul>
-<li><p>The agents goal is to maximise its long term reward $J(\theta) = \mathbb{E}_{\pi_{\theta}}\left[\sum\limits_{t=0}^\infty{\gamma^tR(s)}\right]$</p>
+<li><p>The agents goal is to maximise its long term reward $ V^\pi(s) =  \mathbb{E}_{\pi}\left[\sum\limits_{t=0}^\infty{\gamma^tR \left( s^{t} \right) }\right]$</p>
 </li>
-<li><p>$\underset{\theta}{\operatorname{argmax}}  J(\theta)$</p>
+<li><p>$\pi^* = \underset{\pi}{\operatorname{argmax}}  V^\pi(s_0)$</p>
 </li>
 <li>Risk Neutral Agent - think of the EagleWorld Example</li>
 <li>Rewards can be anything, but most organisms receive rewards only in a very limited amount of states (e.g., fish in water)</li>
-<li>What if your reward signal is money ?</li>
+<li>What if your reward signal is money ?<ul>
 <li>Sociopathic, Egotistic, Greed-is-good Gordon Gecco</li>
+<li>No concept of &quot;Externalities&quot; - agents might wreak havoc for marginal reward increases</li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -2122,7 +2123,7 @@ In&nbsp;[4]:
 <ul>
 <li>...also known as planning in certain contexts</li>
 <li>Who was doing the thinking in the previous example (You? The eagle ?)  </li>
-<li>An agent has access to model, i.e. has a copy of the MDP (the outside world) in its brain</li>
+<li>An agent has access to model, i.e., has a copy of the MDP (the outside world) in its mind</li>
 <li>Using that copy, it tries to &quot;think&quot; what is the best route of action</li>
 <li>It than executes this policy on the real world MDP</li>
 <li>You can&#39;t really copy the world inside your head, but you can copy the dynamics</li>
@@ -2144,13 +2145,14 @@ In&nbsp;[4]:
 <hr>
 <ul>
 <li>There are the two most important functions related to an MDP </li>
+<li>$V(s) = \mathbb{E}_{\pi}\left[\sum\limits_{t=0}^\infty{\gamma^tR \left( s^{t} \right) }\right]$</li>
 <li>Recursive definitions</li>
-<li>$ {V^\pi (s) = R(s) + \sum\limits_{a \in A}\pi(s,a)\left( \gamma\sum\limits_{s' \in S} T(s'|s,a) V^\pi(s')     \right)}$ </li>
-<li>${Q^\pi (s,a) =  \gamma\sum\limits_{s' \in S} T(s'|s,a)\left(R(s') +   \sum\limits_{a' \in A}\pi(a',s')Q(s',a')    \right)}$ </li>
-<li>Called Q-Value(s) and V-Value(s) respectively</li>
+<li>$ {V^\pi (s) = R(s) + \gamma\sum\limits_{a \in A}\pi(s,a)\left( \sum\limits_{s' \in S} T(s'|s,a) V^\pi(s')     \right)}$ </li>
+<li>${Q^\pi (s,a) =  \sum\limits_{s' \in S} T(s'|s,a)\left(R(s') +   \gamma\sum\limits_{a' \in A}\pi(a',s')Q(s',a')    \right)}$ </li>
+<li><strong>Called  V-Value(s) (<em>state-value function</em>) and Q-Value(s) (<em>state-action value function</em>) respectively</strong></li>
 <li>They are also interrelated</li>
-<li>$Q^\pi(s,a) = \gamma\sum\limits_{s' \in S} T(s'|s,a) V^\pi(s')$</li>
-<li>$V^\pi(s) =  R(s) + \sum\limits_{a' \in A} \pi(s,a) Q^\pi(s,a)$</li>
+<li>$Q^\pi(s,a) = \sum\limits_{s' \in S} T(s'|s,a) V^\pi(s')$</li>
+<li>$V^\pi(s) =  R(s) + \gamma\sum\limits_{a' \in A} \pi(s,a) Q^\pi(s,a)$</li>
 </ul>
 </div>
 </div>
@@ -2168,9 +2170,10 @@ In&nbsp;[4]:
 <ul>
 <li>An optimal policy can be defined in terms of Q-values</li>
 <li>It is the policy that maximises Q values</li>
-<li>$Q^*(s,a) = \gamma\sum\limits_{s' \in S} T(s'|s,a)R(s')\max\limits_{a'}Q(s',a')$</li>
+<li>${Q^* (s,a) =  \sum\limits_{s' \in S} T(s'|s,a)\left(R(s') +   \gamma\max\limits_{a' \in A}\pi(a',s')Q(s',a')    \right)}$ </li>
+<li>$ {V^* (s) = R(s) + \gamma\max\limits_{a \in A}\left( \sum\limits_{s' \in S} T(s'|s,a) V^*(s')     \right)}$ </li>
 <li>$\pi^*(s,a) = \begin{cases} 1, &amp; \mbox{if } \mbox{ $a = \underset{a \in A}{\operatorname{argmax}}  Q^*(s,a)$} \\ 0, &amp;  \mbox{ otherwise} \end{cases}$</li>
-<li>$V^*(s) =  \sum\limits_{a' \in A} \pi^*(s,a) Q^\pi(s,a)$</li>
+<li>$V^*(s) = R(s) +  \gamma\sum\limits_{a' \in A} \pi^*(s,a) Q^{*}(s,a) = R(s) + \gamma\max\limits_{a' \in A}  Q^{*}(s,a)$</li>
 </ul>
 </div>
 </div>
@@ -2179,7 +2182,7 @@ In&nbsp;[4]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[5]:
+In&nbsp;[2]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -2352,8 +2355,8 @@ In&nbsp;[5]:
 <h2 id="gridworld-1-">GridWorld (1)</h2>
 <hr>
 <ul>
-<li>As we saw previously, when they are cycles in the MDP (which might happen quite often) it&#39;s not easy to calculate the Bellman backups directly</li>
-<li>An alternative is to used a method called <em>Policy Iteration</em></li>
+<li>As we saw previously, when there are cycles in the MDP (which might happen quite often) it&#39;s not easy to calculate the Bellman backups directly</li>
+<li>A number of methods to overcome this</li>
 <li>Let&#39;s imagine an MDP full of loops - GridWorld<ul>
 <li>A simple world, partitioned in a grid</li>
 <li>Goal it to get to the upper right corner, and avoid the block right below it (both terminal states)</li>
@@ -2403,7 +2406,7 @@ In&nbsp;[5]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[6]:
+In&nbsp;[3]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -2453,7 +2456,7 @@ In&nbsp;[6]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[7]:
+In&nbsp;[4]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -2544,16 +2547,47 @@ xSMZXrX9O8Ptbq+1Ow4AAAAAAAAAAAAAANwi/wMdiqYLkC5QywAAAABJRU5ErkJggg==
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="value-iteration">Value Iteration</h2>
+<hr>
+<ul>
+<li>There are iterative methods that can get us the value</li>
+<li>One of them is termed value iteration<ul>
+<li>Start with some random V_0(s)</li>
+<li>Proceed with calculating <ul>
+<li>$ {V_{n+1} (s) =  R(s) + \gamma\max\limits_{a \in A}\left( \sum\limits_{s' \in S} T(s'|s,a) V_n(s')     \right)}$</li>
+<li>Use only the next s&#39;, <strong>do not recurse</strong></li>
+</ul>
+</li>
+<li>Repeat</li>
+</ul>
+</li>
+<li>Such methods are called &quot;Dynamic Programming&quot;<ul>
+<li>Do not make much sense in the case of finite MDPS without loops, use backups</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div></section>
+    </section><section>
+    <section>
+    
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="-modified-policy-iteration">(Modified) Policy Iteration</h2>
 <hr>
 <ul>
-<li>Policy Iteration is an iterative, model-based method for attacking any kind of MDP</li>
-<li>It does not make much sense in the case of finite MDPS without loops, use backups</li>
-<li>Loop until policy no further changes<ul>
+<li><p>Policy Iteration is an iterative, model-based method for attacking any kind of MDP</p>
+</li>
+<li><p>Loop until policy no further changes</p>
+<ul>
 <li>Policy Evaluation: Find V-Values given a policy - start with a random policy<ul>
 <li>Loop over states for a fixed number of iterations $k$</li>
 <li>For all states $s$<ul>
-<li>$ {V^{\pi_{n}} (s) = R(s) + \sum\limits_{a \in A}\pi_n(s,a)\left( \gamma\sum\limits_{s' \in S} T(s'|s,a) V^{\pi_n}(s')     \right)}$ </li>
+<li>$ {V^{\pi_{n}} (s) =  R(s) + \gamma\sum\limits_{a \in A}\pi_n(s,a)\left( \sum\limits_{s' \in S} T(s'|s,a) V^{\pi_{n-1}}(s')     \right)}$ </li>
 </ul>
 </li>
 <li>Don&#39;t recurse until the end - just do it for the immidate next state!</li>
@@ -2573,7 +2607,7 @@ xSMZXrX9O8Ptbq+1Ow4AAAAAAAAAAAAAANwi/wMdiqYLkC5QywAAAABJRU5ErkJggg==
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[8]:
+In&nbsp;[5]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -2615,6 +2649,21 @@ In&nbsp;[8]:
                 <span class="n">V</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">R</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">+</span> <span class="n">gamma</span> <span class="o">*</span> <span class="nb">sum</span><span class="p">([</span><span class="n">p</span> <span class="o">*</span> <span class="n">V</span><span class="p">[</span><span class="n">s1</span><span class="p">]</span> <span class="k">for</span> <span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">s1</span><span class="p">)</span> <span class="ow">in</span> <span class="n">T</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">pi</span><span class="p">[</span><span class="n">s</span><span class="p">])])</span>
         <span class="k">return</span> <span class="n">V</span>
     
+    <span class="k">def</span> <span class="nf">valueIteration</span><span class="p">(</span><span class="n">epsilon</span><span class="o">=</span><span class="mf">0.001</span><span class="p">):</span>
+        <span class="s">&quot;Solving an MDP by value iteration.&quot;</span>
+        <span class="n">V1</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">mdp</span><span class="o">.</span><span class="n">states</span><span class="p">])</span>
+        <span class="n">R</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">gamma</span> <span class="o">=</span> <span class="n">mdp</span><span class="o">.</span><span class="n">R</span><span class="p">,</span> <span class="n">mdp</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">mdp</span><span class="o">.</span><span class="n">gamma</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">V</span> <span class="o">=</span> <span class="n">V1</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> 
+            <span class="n">delta</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">mdp</span><span class="o">.</span><span class="n">states</span><span class="p">:</span>
+                <span class="n">V1</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">R</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">+</span> <span class="n">gamma</span> <span class="o">*</span> <span class="nb">max</span><span class="p">([</span><span class="nb">sum</span><span class="p">([</span><span class="n">p</span> <span class="o">*</span> <span class="n">V</span><span class="p">[</span><span class="n">s1</span><span class="p">]</span> <span class="k">for</span> <span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">s1</span><span class="p">)</span> <span class="ow">in</span> <span class="n">T</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">a</span><span class="p">)])</span>
+                                            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">mdp</span><span class="o">.</span><span class="n">actions</span><span class="p">(</span><span class="n">s</span><span class="p">)])</span>
+                <span class="n">delta</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="nb">abs</span><span class="p">(</span><span class="n">V1</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">-</span> <span class="n">V</span><span class="p">[</span><span class="n">s</span><span class="p">]))</span>
+            <span class="k">if</span> <span class="n">delta</span> <span class="o">&lt;</span> <span class="n">epsilon</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">gamma</span><span class="p">)</span> <span class="o">/</span> <span class="n">gamma</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">V</span> <span class="o">=</span> <span class="n">V</span> 
+                <span class="k">return</span> 
+    
 </pre></div>
 
 </div>
@@ -2627,7 +2676,7 @@ In&nbsp;[8]:
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[9]:
+In&nbsp;[6]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -2770,8 +2819,12 @@ I0mSJEmSJEmSJEmSJEmSJElSP/k/Kx1shyi1yzQAAAAASUVORK5CYII=
 <li>We have assumed the agent has a copy of the MDP (a <em>model</em>) in its head</li>
 <li>This is rarely the case</li>
 <li>Generaly the agent can only interact with the envinroment</li>
-<li>i.e. the agent is imbued in a statistical bath of states, actions, trantisions and rewards</li>
-<li>How can the agent act then ? </li>
+<li>i.e., the agent is imbued in a statistical bath of states, actions, trantisions and rewards</li>
+<li>An agent samples its enviroment until it reached a terminal state<ul>
+<li>Tuples in the form (s&#39;,a&#39;,r&#39;)</li>
+<li>[(1,0), left, -0.04], [(2,0), left, -0.04],[(3,0), left, -0.04], [(3,1), up, -1]</li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -2787,8 +2840,7 @@ I0mSJEmSJEmSJEmSJEmSJElSP/k/Kx1shyi1yzQAAAAASUVORK5CYII=
 <h2 id="monte-carlo-control-1-">Monte Carlo Control (1)</h2>
 <hr>
 <ul>
-<li>This is the easiest, most sure to work method of all</li>
-<li>High Variance</li>
+<li>Remember Q is just E[</li>
 <li>MC (Naive Version)<ul>
 <li>Start at any state, initialise $Q_0(s,a)$ as you visit states/actions </li>
 <li>Act $\epsilon$-greedily<ul>
@@ -2796,8 +2848,8 @@ I0mSJEmSJEmSJEmSJEmSJElSP/k/Kx1shyi1yzQAAAAASUVORK5CYII=
 </ul>
 </li>
 <li>Wait until episode ends</li>
-<li>Add all reward you have seen so far to $\mathrm{v_t^i}  = R_1+R_2+...R_t$ for episode $i$</li>
-<li>$Q_n(s,a) =  E_{\pi^\epsilon}[\mathrm{v_t}]  = \frac{1}{n}\sum\limits_{i=1}^{n}{\mathrm{v_t^i}} $, where $n$ is the times a state is visited  </li>
+<li>Add all reward you have seen so far to $\mathrm{v_\tau^i}  = R(s')+ \gamma R(s'') + \gamma^2 R(s''') + \gamma^{\tau-1}R(s^\tau)$ for episode $i$</li>
+<li>$Q_n(s,a) =  E_{\pi^\epsilon}[\mathrm{v_\tau^i}]  = \frac{1}{n}\sum\limits_{i=1}^{n}{\mathrm{v_\tau^i}} $, where $k$ is the times a state is visited  </li>
 </ul>
 </li>
 </ul>
@@ -2816,13 +2868,12 @@ I0mSJEmSJEmSJEmSJEmSJElSP/k/Kx1shyi1yzQAAAAASUVORK5CYII=
 <hr>
 <ul>
 <li>$\epsilon$-greedy means acting greedily $1-\epsilon$, random otherwise</li>
-<li>Since there the policy we follow will change over time, $Q(s,a)$ is not stationary</li>
 <li>Better to calculate mean incrementaly
 \begin{align*}
-Q_n(s,a) &amp;= E_{\pi^n}[\mathrm{v_t^i}]\\
-Q_n(s,a) &amp;= \frac{1}{n}\sum\limits_{i=1}^{n}{\mathrm{v_t^i}}\\
-Q_n(s,a) &amp;= \frac{1}{n}\left(\mathrm{v_t^1} + \mathrm{v_t^2}....\mathrm{v_t^{n-1}} +  \mathrm{v_t^n}\right)\\
-Q_n(s,a) &amp;= \frac{1}{n}\left(\sum\limits_{i=1}^{ n-1}{\mathrm{v_t^i}} +  \mathrm{v_t^n}\right)\\
+Q_n(s,a) &amp;= E_{\pi_n}[\mathrm{v_\tau^i}]\\
+Q_n(s,a) &amp;= \frac{1}{n}\sum\limits_{i=1}^{n}{\mathrm{v_\tau^i}}\\
+Q_n(s,a) &amp;= \frac{1}{n}\left(\mathrm{v_t^1} + \mathrm{v_\tau^2}....\mathrm{v_\tau^{n-1}} +  \mathrm{v_\tau^n}\right)\\
+Q_n(s,a) &amp;= \frac{1}{n}\left(\sum\limits_{i=1}^{ n-1}{\mathrm{v_\tau^i}} +  \mathrm{v_\tau^n}\right)\\
 \end{align*}</li>
 </ul>
 </div>
@@ -2838,12 +2889,12 @@ Q_n(s,a) &amp;= \frac{1}{n}\left(\sum\limits_{i=1}^{ n-1}{\mathrm{v_t^i}} +  \ma
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="monte-carlo-control-3-">Monte Carlo Control (3)</h2>
 <hr>
-<p>by definition $Q_{n-1}(s,a) = \frac{1}{{n-1}}\sum\limits_{i=1}^{n-1}{\mathrm{v_t^i}} \implies (n-1)Q_{n-1}(s,a) =  \sum\limits_{i=1}^{n-1}{\mathrm{v_t^i}} $
+<p>by definition $Q_{n-1}(s,a) = \frac{1}{{n-1}}\sum\limits_{i=1}^{n-1}{\mathrm{v_\tau^i}} \implies (n-1)Q_{n-1}(s,a) =  \sum\limits_{i=1}^{n-1}{\mathrm{v_\tau^i}} $
 \begin{align*}
-Q_n(s,a) &amp;= \frac{1}{n}\left((n-1)Q_{n-1}(s,a) +  \mathrm{v_t^n}\right) \\
-Q_n(s,a) &amp;= \frac{1}{n}\left(Q_{n-1}(s,a)n - Q_{n-1}(s,a) + \mathrm{v_t^n}\right)\\
-Q_n(s,a) &amp;= \frac{Q_{n-1}(s,a)n}{n} + \frac{-Q_{n-1}(s,a) + \mathrm{v_t^n}}{n}\\
-Q_n(s,a) &amp;= Q_{n-1}(s,a) + \frac{\overbrace{\mathrm{v_t^n} - Q_{n-1}(s,a)}^{\textbf{MC-Error}} }{n}\\
+Q_n(s,a) &amp;= \frac{1}{n}\left((n-1)Q_{n-1}(s,a) +  \mathrm{v_\tau^n}\right) \\
+Q_n(s,a) &amp;= \frac{1}{n}\left(Q_{n-1}(s,a)k - Q_{n-1}(s,a) + \mathrm{v_\tau^n}\right)\\
+Q_n(s,a) &amp;= \frac{Q_{n-1}(s,a)k}{n} + \frac{-Q_{n-1}(s,a) + \mathrm{v_\tau^n}}{n}\\
+Q_n(s,a) &amp;= Q_{n-1}(s,a) + \frac{\overbrace{\mathrm{v_\tau^n} - Q_{n-1}(s,a)}^{\textbf{MC-Error}} }{n}\\
 \end{align*}</p>
 </div>
 </div>
@@ -2859,24 +2910,24 @@ Q_n(s,a) &amp;= Q_{n-1}(s,a) + \frac{\overbrace{\mathrm{v_t^n} - Q_{n-1}(s,a)}^{
 <h2 id="monte-carlo-control-putting-it-all-togeather">Monte Carlo Control - Putting it all togeather</h2>
 <hr>
 <ul>
-<li><p>But $pi^n$ changes continously, so the expectation is non-stationary
+<li>But $\pi^n$ changes continuously, so the distribution of rewards is non-stationary
 \begin{align*}
-Q_n(s,a) &amp;= Q_{n-1}(s,a) + \frac{1}{n}\left[\mathrm{v_t^n} - Q_{n-1}(s,a) \right] \rightarrow \textbf{bandit case} \\
-Q_n(s,a) &amp;= Q_{n-1}(s,a) + \alpha\left[\mathrm{v_t^n} - Q_{n-1}(s,a) \right]  \rightarrow \textbf{Full MDP case}\\
-\end{align*}</p>
-</li>
+Q_n(s,a) &amp;= Q_{n-1}(s,a) + \frac{1}{n}\left[\mathrm{v_\tau^n} - Q_{n-1}(s,a) \right] \rightarrow \textbf{bandit case} \\
+Q_n(s,a) &amp;= Q_{n-1}(s,a) + \alpha\left[\mathrm{v_\tau^n} - Q_{n-1}(s,a) \right]  \rightarrow \textbf{Full MDP case}\\
+\end{align*}</li>
+<li>A Bandit is an MDP with a chain of length two (i.e. s, s&#39;) - like the initial EagleWorld </li>
 <li><p>$\alpha$ is a learning rate, usually set to a small value (e.g., 0.001)</p>
 </li>
 <li><p>MC</p>
 <ul>
 <li>Start at any state, initialise $Q_0(s,a)$ as you visit states/actions </li>
 <li>Act $\epsilon$-greedily<ul>
-<li>$\pi^\epsilon(s,a) = \begin{cases} 1-\epsilon + \epsilon/|A| , &amp; \mbox{if } \mbox{ $a = \underset{a \in A}{\operatorname{argmax}}  Q_n(s,a)$} \\ \epsilon/|A|, &amp; \mbox{if } \mbox{ otherwise} \end{cases}$</li>
+<li>$\pi_\epsilon^n(s,a) = \begin{cases} 1-\epsilon + \epsilon/|A| , &amp; \mbox{if } \mbox{ $a = \underset{a \in A}{\operatorname{argmax}}  Q_n(s,a)$} \\ \epsilon/|A|, &amp; \mbox{if } \mbox{ otherwise} \end{cases}$</li>
 </ul>
 </li>
-<li>Wait until episode ends</li>
-<li>Add all reward you have seen so far to $\mathrm{v_t^i}  = R_1+R_2+...R_t$ for episode $i$</li>
-<li>$Q_n(s,a) = Q_{n-1}(s,a) + \alpha\left[\mathrm{v_t^n} - Q_{n-1}(s,a) \right]$</li>
+<li>Wait until episode ends, i.e. a terminal state is hit - $\epsilon$ set to some low value, e.g., 0.1</li>
+<li>Add all reward you have seen so far to $\mathrm{v_\tau^i}  = R(s)+\gamma R(s')+...\gamma^2R(s'') + \gamma^{\tau-1}R(s^\tau)$ for episode $i$</li>
+<li>$Q_n(s,a) = Q_{n-1}(s,a) + \alpha\left[\mathrm{v_\tau^n} - Q_{n-1}(s,a) \right]$</li>
 </ul>
 </li>
 </ul>
@@ -2894,16 +2945,16 @@ Q_n(s,a) &amp;= Q_{n-1}(s,a) + \alpha\left[\mathrm{v_t^n} - Q_{n-1}(s,a) \right]
 <h2 id="simplified-blackjackworld">Simplified BlackJackWorld</h2>
 <hr>
 <ul>
-<li>We are going to use a simplified version of BlacJack, a popular card game, as an example</li>
+<li>We are going to use a simplified version of BlackJack, a popular card game, as an example</li>
 <li>Though it is possible to create a model, it&#39;s not that trivial, which makes it ideal for model-free methods</li>
 <li>Game Rules as follows<ul>
-<li>All cards have the face values, except J,Q,K that have a value of 10 and A that has a value of 11</li>
+<li>All cards have their face values, except J,Q,K that have a value of 10 and A that has a value of 11</li>
 <li>Goal of the game is to reach 21 - or if you have two aces 22 (that&#39;s a deviation from the original game)</li>
 <li>A player and a Dealer are dealt 2 cards each - the dealer keeps the second card hidden</li>
 <li>A player can &quot;stick&quot; - no more cards received or &quot;hit&quot; (get more cards)<ul>
 <li>If the score of 21 (or 22 in case of two aces) is passed, the player loses (reward -1)</li>
-<li>If the player has a higher score than the dealer, he wins (reward +1)</li>
-<li>If scores equal (reward 0)</li>
+<li>If the player has a higher score than the dealer, she wins (reward +1)</li>
+<li>If scores are equal (reward 0)</li>
 </ul>
 </li>
 <li>Dealer has a fixed policy, if score less than 17, she has to draw more cards</li>
@@ -3014,85 +3065,85 @@ In&nbsp;[8]:
 
 <div class="output_png output_subarea ">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAVkAAADyCAYAAADnXrZCAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
-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
-TkSuQmCC
+AAALEgAACxIB0t1+/AAAEUBJREFUeJzt3X2UFfV9x/E3iE+AIqICIrJoJXrEAmqNxloRTatiY01O
+EnNqTbCtPWmbSk5PUx/iAzXWtjYNadKHmAQi2phYoz0mWKtFUZNYFFwQFCRRsS4oWnmWaARu//jO
+spdl7t65s/tbdtn365w9+zDz3ZndO/dzf/O7v/kNSJIkSZIkSZIkSZIkSZIkSb3GLGAtsHRP74gk
+7Y3OAiZhyEpSMk0UCNn+6fdDkvouQ1aSEjJkJfU5Q4cOrQCNfGwqu60Bnd1ZSept1q9fz44dOwqv
+379//4PKbsuWrKQ+qVKpFP7IcTfwU2Ac8BowrdZ2+qXZfUnq0Srbtm0rvPKAAQOgZF7aXSCpT2qk
+u6AzDFlJfVKNboAuZ8hK6pMMWUlKyJCVpIQMWUlKyJCVpIQMWUlKyCFckpSQLVlJSsiQlaSEDFlJ
+SsiQlaSEDFlJSsiQlaSEHMIlSQnZkpWkhAxZSUrIkJWkhAxZSUrIkJWkhAxZSUrIIVySlJAtWUlK
+yJCVpIQMWUlKyJCVpIQMWUlKyNEFkpSQLVlJSsiQlaSEDFlJSsiQlaSEDFlJSsiQlaSEHMIlSQnZ
+kpWkhAxZSUrIkJWkhAxZSUrIkJWkhAxZSUrIIVySlJAtWUlKyJCVpIQMWUlKyJCVpIQMWUlKyJCV
+pIQcwiVJCdmSlaSEDFlJSsiQlaSEDFlJSsiQlaSEDFlJSsghXJKUkC1ZSUrIkJWkhAxZSUrIkJWk
+hAxZSUrI0QWSlJAtWUlKyJCVpIQMWUlKyJCVpIQMWUlKyJCVpIQcwiVJCdmSlaSEDFlJSsiQlaSE
+DFlJSsiQlaSEDFlJSsghXJKUkC1ZSUrIkJWkhAxZSUrIkJWkhAxZSUrIkJWkhBzCJUkJ2ZKVpIQM
+WUlKyJCVpIQMWUlKyJCVpIQMWUlKyCFckpSQLVlJSsiQlaSE+lzIDh8+vLJ27do9vRuSeoFRo0ax
+evXqfp35HX0uZNeuXcu0adNylzU3NzNp0qTcZbNnz+KSSz6au2z58uWccMIJucvuv/8+Lr/807nL
+Fi9ezMSJE3OXzZlzB5dd9nu5y5YsWcKECRNyl911151ceeUf5S5buHAhp556au6y22//Brfc8te5
+y+bNm8e5556bu+y6667l5pu/lLsM4NFHH2XKlCm5y66//ovMmPFXucsee+wxzjnnnNxlN954Ayef
+fErusjVr1nDkkUfmLnv22UWcdtoHc5e1tLRw1FFH5S57+ukFnHji+Nxlb775JkcccUTusuefX8ao
+Ufm/c9OmTRx88MG5y1avbqGpaWzusvXr1zN06NDcZatWvcKxx/5K7rJ169Zx6KGH5i576aWfM3Jk
+/v9s8+bNHHTQQbnLXn99DUOGHJK77N133+WAAw7IXbZx4waGDDmEjRs35i7vWKX0NqdP/3zusqee
+eoozzjgjd9nMmTNL7OOu+lzISlJ36q7RBf278Hc1AUtzfj4DaG0yTQcO7MJtSlIplUql8EdndEdL
+9saqr68C7gR+0cgvGDFiRKkNH3bYYaXqym5v+PDhpepqnUbXM3Zs/qlrytqmpqZSdbVObeupdepe
+z6BBg0rV7b///qXqap0O13PggeXaHPvtt1+pugEDuv/ktew2a3UTdZXe2l2wD3A78CFgNXAx8K/A
+D4Ejs4/HgLeA/M7EHCNHjiy1M4cffnipurIhW7aubMgec8wxpeqgfMiWrdvbQ7ZsWJatK7ufvSlk
+R48e3cV7sqvuCtmu7C4AOA74OjAe2AB8DKhkH18D1gCTaSBgJSmF3tpd8ArwXPb1IqKftrDm5uad
+X48YMaJ0C1bS3uW1116jpaWlS39nb+0ueK/q6+00+CZXrWFakvq20aNH79J9sGDBgk7/zt4asvVs
+Bg4G1nXzdiVpF711gph6Lw23Aw8Rb4rZLytpj+mNLdlVwK9Wff/lnHW+nn1I0h7VW0cXSFKv0AWj
+C84HVgA/A/6y1kpeViupT+pkS3Yf4qz8PKL78xngAWB5+xU7NYtNF6vU79KVJMiiqzP5VbnpppsK
+r5ytW729M4irWc/Pvr86+/w37Wt7VEt26tSLGq6ZO/dHTJzY+NCvxYubOfPMX2+47ic/+XHNmaY6
+8uyzixg//qSG65YtW8rxx+fPJNaRFSuWM27cBxquA1i58sXS29x338Yv93z//V8yeHDjV4Rt2bK5
+5mxaHVm9uqX0Y3j22ZMbrnv88fk1Z3zryJw5d3Drrbs9Z+u65pqrmTv3wYbrpk69kLlzHyx15eIp
+p5zM1q0NXS0PwMCBB1KmQdmvC5qHnWzJjgJeq/q+BcidSq5HhawkdZdODuEqnNBlQnY68A3aJnmZ
+C3wK2FRj/e8Qcxf8oMS2JCmJjlqyq1at4tVXX+2ofDVQPbnCaKI1u5syIdt+Jq2pdda3o1VSj9NR
+yI4ZM4YxY8bs/P7JJ59sv8pCYq6WJmJOlk8Sjc3d1BvCNYhoqS4m5oq9gbaZtOZl66wCWqd2vxxY
+kq1/R/Xfk32+GZhdYLuSlFQnh3BtA/4U+C/gBeD75IwsgPot2fOJZnFra/VgYBoxk1brpbGte3Ai
+cB3xrts6oPpeFP2A24jQzr/HjCR1oy64GOE/s48O1QvZ54C/J4Yl/Aj4cY31+hF3P7iHtvDdULXs
+emABkH+Tq8zKlSt3fj1s2DCGDRtWZ/ck9QXz589n/vz5Xfo7e8pltT8DJhEt2S8Bj3awboX8cWsV
+YqDuKcBQYH2tXzBu3Lg6uyOpL5o8eTKTJ0/e+f2MGTM6/Tt7ymW1I4F3gX8jWrSTiFEE7aerrxAB
+/HHa+merb935ENEangsM7twuS1Ln7dixo/BHZ9QL2ZOI0/xm4pT/ZuCbRGjOa7fuC8AtwOPEG1/V
+E8RUgHuz2geAhu6d8fbbbzey+k6bN28uVVfulsjlt7dly5ZSde+8806pOoCtW7d26zbLHqjbtm0r
+Vffee+/VXylH2cdww4YN9VfK8cYbb5Sqe/nll0vVPffcc/VXyrFw4cJSdQBPPPFEqbqu7h5or7vu
+jFAvZB8GJhAt2A8CzxLX6x5P21SFY2nrh51DBPNE4IrsZ9OA+7KvZxN9tw09A8qGbNnw6u6QLRtc
+ZYOyM7Vl68oeqNu3by9VZ8jmW7o074bS9S1atKhUHRiyXvElqU/qKW98SdJeqbtCtifNwjUfOHtP
+74SkXuFxYrx+WZXp06cXXnnmzJlQMi97Ukt28p7eAUl9h90FkpRQb72RoiT1CrZkJSmhnnLFV0+w
+D3ExxA8brFtFzL3QDDzdQN0hxIUTy4kLLE4vUPOBbDutHxuBPyu4vWuA54lZzr5L8Qs1rspqlmVf
+1zILWJut2+pQ4BFgJTEW+pCCdR/P9nU7cHID27uN+H8uIcZMDylYdzNts7rNY9f5Ozuqa/XnwA7a
+rkIsUnsTMS9o62N5/u5lNbf5OeLvXAb8bcG671Vt65Xsc5G604jjupm4bP3XCtZNAJ4inhsPAHm3
+pBhNzLT3fPa3tB7L9Y6bWnX1jptadUWOm9J6ysUIPcFVRNg1+pdWiDfTJhEHZFFfBR4ETiBucZ47
+fVk7L2bbmUTM0bAVuL9AXRPwh8SBdxLxgnJpgbrxwB8QT6wJwEXAsTXWnc3uQXE18WQZR4TX1e2L
+atQtBS4BOhpdnlf3MDFL2wTiCXpNwbq/y2omAv9B3FOpSB3EE/fDQEczL+fVVoB/oO3xfKhg3TnA
+R4hjZjxxGXqRukurtvUD8ie3r/W/uT6ruyH7vkjdt4AvZPt5P/AXOXXvA58nHrPTgT8hng/1jpta
+dfWOm1p1RY6b0gzZcBRwIXFglBk+0WjNEOAsogUAMWdko5d/nQe8xK73/6llE3GADSS6bgYSU0vW
+czxxufO7ROvgceCjNdZ9kt0n5fkIbfP93gH8TsG6FcTB3pG8ukeIFiXZfufdmCuvrvryq8HA/xWs
+gwjKL5TYV6h/3OTVfRa4lXg8Ad5qYHut2/wEcHfButdpa9kdQv5xk1d3XPZzgP8GPpZT9wZx9gCw
+hWhojKL+cZNXdyT1j5tadUWOm9IM2fAV4pW2zNuAFeIgWki0FosYSzw5ZhOXEH+TCL5GXEqc9hex
+jpjj4X+J2dU3EPtczzLixeDQbP+m0tgBOJw4jST7PLyB2s66gjhTKOoW4v/zaXLuBFrDxcQpf7kL
+9eO0fwnwbfK7UvIcB/wG8D/EmO9TG9zmWcRj8VLB9a+m7di5jeKtvOeJ/w/EaXxeF0y1JqK1vIDG
+jpvqukbUqmv0uKmrp0wQsyddBLxJ9DmVacWeSTxYFxCnH2cVqBlAnLr/c/b5HfJPpWvZD/ht4N8L
+rn8scc+0JuKVezDwuwXqVhB9fg8TkwY3U+6FCOLFqLtuEXQd8EuKvwi11hxN3CvuKwXWHwhcy65d
+C40cP/9CvNhOJFqLX+549Z0GEDPPnU40DO5pYJsQty5p5P/ybaLv8mjiVHtWx6vvdAXwx0TjYzDx
+eNQymOi+uIpdzyqg4+NmMPG+xlVEy7SoWnVljpu6bMnCh4jTk1eIU6gpxAQ0Rb2efX6L6Hsq0i/b
+kn08k31/L7Xf4MlzAbCI/FPFPKcCPwXeJrom7iP+7iJmZfVnEy3gFxvYz7VA632fRxIvZql9huj6
+KfIikue75L+5096xxIvWEuLYOYp4TI4ouJ03aQuQb1G8P7+FtomQniFe9IrOOj+A6LP8fsH1yfar
+td//Xorv54vAbxHHzveo3XLelwjYO4n+cCh23LTW3VVVV0Stus/QueOmJkM2WiOjiVbFpcR8tZcX
+rB1I27umg4DfJP/d5/beIPpSW2cPP484vSrqU+T3qdWygmj5HEi0ts4j3uQrojU0jiaeoI28yj9A
+nH6TfW7kydCqkdbh+UTr7mKiH7mo46q+vpj8d97bW0qcxo7NPlqIF8qiLyQjq76+hGLHDcT/cEr2
+9TjirKbo9HHnEf2QawquD/Bz2i5Dn0L9vvJWh2ef+wNfJFru7fUjWsovADOrfl7vuKlV136dotsr
+e9wU4ixcu2vkLx1O26v8AGLS8YcL1n4uW38/4lW+6D3JBhFPlqL9vxCtrTnEqdsOoh/49oK19xIt
+pfeJ079at2S/m3gyHka8gNxA9G3eA/w+MdTtEwXqbiT6kL+W/WwuEXoXFKi7hvh/PpKt81S2z/Xq
+LiSGx20nHovPdrCfw6r+vtlVyzs6bvK2OZnoKqgQLeG8WyblbXNW9rGUOLXNaxDU2tdP0vGLc95j
+eCXwT8SQv19k3xf5+wYT3WcQLcfv5NSdCVxG2xBIiMew3nGTV3dtto8dHTe16v6R+sdNaX1xghhJ
+6i6VadOK39N19uzZsBdMECNJ3cbLaiUpISeIkaSEbMlKUkKGrCQlZMhKUkKGrCQlZMhKUkKGrCQl
+5BAuSUrIlqwkJWTISlJChqwkJWTISlJChqwkJWTISlJCDuGSpIRsyUpSQoasJCVkyEpSQoasJCVk
+yEpSQoasJCXkEC5JSsiWrCQlZMhKUkKGrCQlZMhKUkKGrCQl5OgCSUrIlqwkJWTISlJChqwkJWTI
+SlJChqwkJWTISlJCDuGSpIRsyUpSQoasJCVkyEpSQoasJCVkyEpSQoasJCXkEC5JSsiWrCQlZMhK
+UkKGrCQlZMhKUkKGrCQlZMhKUkIO4ZKkhGzJSlJChqwkJWTISlJChqwkJWTISlJChqwkJeQQLklK
+yJasJCVkyEpSQoasJCVkyEpSQoasJCVkyEpSQg7hkqSEbMlKUkKGrCQlZMhKUkKGrCQlZMhKUkKO
+LpCkhGzJSlJChqwkJWTISlJChqwkJWTISlJChqwkJeQQLklKyJasJCVkyEpSQoasJCVkyEpSQoas
+JCXUXSHbr1u2Ikk9S5mELZWX/csUSVIfs35P74AkSZIkSZIkSZIkSdpb/T/hL++29N2zYAAAAABJ
+RU5ErkJggg==
 "
 >
 </div>
@@ -3136,15 +3187,26 @@ TkSuQmCC
 <hr>
 <ul>
 <li>Stands for State-Action-Reward-State-Action</li>
-<li>0 stands for a paramterer called $\lambda$, which we are going to ignore here</li>
-<li>Remember MC update rule <ul>
+<li>0 stands for a parameter called $\lambda$, which we are going to ignore here</li>
+<li>The MC update rule <ul>
 <li>$Q_n(s,a) = Q_{n-1}(s,a) + \alpha\left[\mathrm{v_\tau^n} - Q_{n-1}(s,a) \right]$</li>
-<li>$Q_n(s,a) = Q_{n-1}(s,a) + \alpha\left[R(s') + \mathrm{v_{\tau}^n} - R(s')-Q_{n-1}(s,a) \right]$</li>
 </ul>
 </li>
-<li>But we can assume roughly that $\mathrm{v_{\tau}^n}  \approx \gamma Q_{n-1}(s',a') + R(s') \Leftrightarrow \mathrm{v_{\tau}^n} - R(s') \approx \gamma Q_{n-1}(s',a')$ <ul>
-<li>$Q_n(s,a) = Q_{n-1}(s,a) + \alpha\left[R(s') + \gamma Q_{n-1}(s',a') - Q_{n-1}(s,a) \right]$</li>
+<li>Let&#39;s try to create an incremental version of MC</li>
 </ul>
+<p>\begin{align*}
+\mathrm{v_\tau^i}  &amp;= R(s')+ \gamma R(s'') + \gamma^2 R(s''') + \gamma^{\tau-1}R(s^\tau) \\
+\mathrm{v_\tau^n} &amp;=  R(s') + \gamma \left(R(s'') + \gamma R(s''') + \gamma^{\tau-1}R(s^\tau)\right)  \\
+\mathrm{v_\tau^n} &amp;=  R(s') + \gamma \mathrm{v_\tau^{n '}} \\
+E_{\pi_n}[\mathrm{v_\tau^i}] &amp;= E_{\pi_n}[R(s') + \gamma \mathrm{v_\tau^{n '}}]\\
+E_{\pi_n}[\mathrm{v_\tau^i}] &amp;= E_{\pi_n}[R(s')] + E_{\pi_n}[\gamma \mathrm{v_\tau^{n '}}]\\
+E_{\pi_n}[\mathrm{v_\tau^i}] &amp;= E_{\pi_n}[R(s') + \gamma Q(s',a')]\\
+\mathrm{v_\tau^n} &amp;=  R(s') + \gamma Q(s',a') 
+\end{align*}</p>
+<ul>
+<li><p>$Q_n(s,a) = Q_{n-1}(s,a) + \alpha\left[R(s') + \gamma Q_{n-1}(s',a') - Q_{n-1}(s,a) \right]$</p>
+</li>
+<li><p>Dynamic Programming targets are closer to SARSA rathen than MC</p>
 </li>
 </ul>
 </div>
@@ -3180,85 +3242,84 @@ In&nbsp;[9]:
 
 <div class="output_png output_subarea ">
 <img src="data:image/png;base64,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
-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
-mg6+WiDkFwAAAABJRU5ErkJggg==
+AAALEgAACxIB0t1+/AAAETJJREFUeJzt3XmQHOV5x/GvTnSBJEDRgaAkQIeDQBI4hthFLIScgAkQ
+SGHjSspBJDjlJFiQVBywEyOKuOJAbIhxjgKDsJ0YQohIREgIpwiUHcJlHRiJO0gWEkIIxCV0Tf54
+erWjVc9Od+++q1nt91M1tbPb/Wz37rzzm7ffebsHJEmSJEmSJEmSJEmSJEmSpF7jZmADsGJf74gk
+7Y9OBmZjyEpSMpMoELL90++HJPVdhqwkJWTISupzRo8eXQPK3LZU3dbAru6sJPU2mzdvZteuXYXX
+79+//4FVt2VPVlKfVKvVCt9y3Ar8CJgKrAHmN9pOvzS7L0ktrbZjx47CKw8cOBAq5qXDBZL6pDLD
+BV1hyErqkxoMA3Q7Q1ZSn2TISlJChqwkJWTISlJChqwkJWTISlJCTuGSpITsyUpSQoasJCVkyEpS
+QoasJCVkyEpSQoasJCXkFC5JSsierCQlZMhKUkKGrCQlZMhKUkKGrCQlZMhKUkJO4ZKkhOzJSlJC
+hqwkJWTISlJChqwkJWTISlJChqwkJeQULklKyJ6sJCVkyEpSQoasJCVkyEpSQoasJCXk7AJJSsie
+rCQlZMhKUkKGrCQlZMhKUkKGrCQlZMhKUkJO4ZKkhOzJSlJChqwkJWTISlJChqwkJWTISlJChqwk
+JeQULklKyJ6sJCVkyEpSQoasJCVkyEpSQoasJCVkyEpSQk7hkqSE7MlKUkKGrCQlZMhKUkKGrCQl
+ZMhKUkKGrCQl5BQuSUrInqwkJWTISlJChqwkJWTISlJChqwkJeTsAklKyJ6sJCVkyEpSQoasJCVk
+yEpSQoasJCVkyEpSQk7hkqSE7MlKUkKGrCQlZMhKUkKGrCQlZMhKUkKGrCQl5BQuSUrInqwkJWTI
+SlJChqwkJWTISlJChqwkJWTISlJCTuGSpITsyUpSQoasJCXU50J2yJAhta1bt+7r3ZDUC4wbN471
+69f368rv6HMhu3XrVo4++ujcZZs2beKQQw7JXfbCC88zYcJhucu2bNnCQQcdlLts3bqfMXXqtNxl
+b7zxBoceemjusueeW8306R/JXbZx40bGjBmTu2zVqmc566yzGyxbxfTp03OXLVnyb1x88Zdylz32
+2GOceOKJucuuv/7bLFx4Ze4ygIceeohTTjkld9nChVfw4IMP5S675ZZbuOCCC3KXzZ17CpMmTc5d
+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
+O1pBHMZOzm5riRfKoi8k4+vun0OxdgPxP5yb3Z9KHNVsKlg7jxiHXFdwfYgrQLWdhj6X5mPlbcZk
+X/sDf0r03DvqR/SUfwpcV/fzZu2mUV3HdYpur2q7KaRVPuOrlZT5S8fS/io/kLjo+L0Fay/O1h9M
+vMoX/Uyy4cSTpej4L0Rv6/vEodsuYhz4hoK1dxA9pe3E4V+jTwy+lXgyHkq8gHyNGNu8HfhtYqrb
+ZwrUXUGMIV+f/exuIvROL1B3OfH/vC9b58fZPjer+zQxPW4n8Vh8sZP9PKTu71tUt7yzdpO3zTnE
+UEGN6AnnfWRS3jZvzm4riEPbvA5Bo339LJ2/OOc9hl8A/oaY8vdB9n2Rv28EMXwG0XO8JafuE8Bv
+0j4FEuIxbNZu8uq+ku1jZ+2mUd23ad5uKuupebKtdIEYSeoptfnzi3+m66JFi6BiXvamnqwkdZtW
++SBFSdovdXXWQFGGrKQ+yZ6sJCVkyEpSQoasJCVkyEpSQoasJCVkyEpSQk7hkqSE7MlKUkKGrCQl
+ZMhKUkKGrCQlZMhKUkKGrCQl5BQuSUrInqwkJWTISlJChqwkJWTISlJChqwkJWTISlJCTuGSpITs
+yUpSQoasJCVkyEpSQoasJCVkyEpSQoasJCXkFC5JSsierCQlZMhKUkKGrCQlZMhKUkKGrCQl5OwC
+SUrInqwkJWTISlJChqwkJWTISlJChqwkJWTISlJCTuGSpITsyUpSQoasJCVkyEpSQoasJCVkyEpS
+QoasJCXkFC5JSsierCQlZMhKUkKGrCQlZMhKUkKGrCQlZMhKUkJO4ZKkhOzJSlJChqwkJWTISlJC
+hqwkJWTISlJChqwkJeQULklKyJ6sJCVkyEpSQoasJCVkyEpSQoasJCXk7AJJSsierCQlZMhKUkKG
+rCQlZMhKUkKGrCQlZMhKUkJO4ZKkhOzJSlJChqwkJWTISlJChqwkJWTISlJCPRWy/XpkK5LUWqok
+bKW87F+lSJL6mM37egckSZIkSZIkSZIkSdL+6v8BggwDSKiW2Z0AAAAASUVORK5CYII=
 "
 >
 </div>
@@ -3312,12 +3373,12 @@ mg6+WiDkFwAAAABJRU5ErkJggg==
 <h2 id="mc-vs-sarsa">MC vs SARSA</h2>
 <hr>
 <ul>
-<li>But not exactly the same</li>
+<li>Not exactly the same</li>
 <li>SARSA(0) has lower variance</li>
-<li>Requires stronger Markov Guarrantees</li>
-<li>MC works even with environments with sensor aliasing/partially observability</li>
+<li>Requires stronger Markov guarantees</li>
+<li>MC works even in environments with sensor aliasing/partially observability</li>
 <li>MC slower to converge, higher variance</li>
-<li>In very long chains, MC should also be prefered, especially if rewards are very delayed, as initial states may not see any rewards fast enough</li>
+<li>In very long chains, MC should be prefered, especially if rewards are very delayed, as initial states may not see any rewards fast enough</li>
 </ul>
 </div>
 </div>
@@ -3330,15 +3391,16 @@ mg6+WiDkFwAAAABJRU5ErkJggg==
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="references">References</h2>
+<h2 id="conclusion">Conclusion</h2>
 <hr>
 <ul>
 <li>RL is a massive topic</li>
 <li>We have shown the tip of iceberg</li>
-<li>Rabbit hole goes deep - there are numerous applications</li>
-<li>Department has a PhD programme associated with RL <ul>
-<li>ICGI Centre</li>
+<li>Rabbit hole goes <em>deep</em> - both on the application level and the theory level</li>
+<li>Essex CS Department has a PhD programme associated with RL <ul>
+<li>IGGI Centre</li>
 <li>Four year long PhD programme</li>
+<li>Chance to use RL in Computer Games</li>
 </ul>
 </li>
 </ul>
@@ -3357,7 +3419,7 @@ mg6+WiDkFwAAAABJRU5ErkJggg==
 <hr>
 <ul>
 <li>David Silver&#39;s UCL Course: <a href="http://www0.cs.ucl.ac.uk/staff/D.Silver/web/Teaching.html">http://www0.cs.ucl.ac.uk/staff/D.Silver/web/Teaching.html</a><ul>
-<li>Some ideas in this lecture notes taken from there</li>
+<li>Some ideas in these lecture notes taken from there</li>
 <li>Probably the best set of notes there is on the subject</li>
 <li>Lectures 1,2,3,4 </li>
 </ul>
@@ -3386,6 +3448,45 @@ mg6+WiDkFwAAAABJRU5ErkJggg==
 </ul>
 </div>
 </div>
+</div><div style=display:none>
+    
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="part-two-review-questions">Part Two Review Questions</h2>
+<hr>
+<ul>
+<li>How is a Q-Value related to the mean rewards ?</li>
+<li>What is relationship between V and Q Values ?</li>
+<li>Write down an example episode state/action/reward values for Gridworld
+  a. Calculate the top node V and Q using bellman backups
+  b. Modify sample Q-Values starting with initial values of 0, $\alpha$ </li>
+<li>Do value iteration for the first 3 steps in EagleWorld MDP</li>
+<li>Perform the first 2 steps of policy iteration in EagleWorld MDP, for K = 2</li>
+<li>Run two iterations of SARSA in EagleWorld MDP</li>
+<li>Run two iterations of MC in EagleWorld MDP</li>
+<li>You run MC in uknown enviroment and you find out that each chain as 50 steps, all containing different states. You have a very limited budget of iterations $k=30$. Would you switch to SARSA why ?</li>
+</ul>
+</div>
+</div>
+</div>
+    </div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre> 
+</pre></div>
+
+</div>
+</div>
+</div>
+
 </div></section>
     </section>
 </div>
