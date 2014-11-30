@@ -59,7 +59,7 @@ class Visualiser:
                 #print x,y,  policy[x,y], "policy"
                 val = chars[policy[x,y]]
                 if(val is not None):
-                    plt.arrow(y,x,val[0],val[1], hold = True)
+                    plt.arrow(y,x,val[0],val[1], hold = True, color = "red")
         if (fig is not None):
             plt.savefig(fig)
 
