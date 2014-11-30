@@ -6,8 +6,8 @@ Handout for SKLearn/RL labs
 	* bash ~/Downloads/install_py_CE802.sh
 	* source ~/Downloads/fix_graphviz.sh
 	* (assuming the files are in ~/Downloads)
+1. Type "cd ~/Documents/CE802_lab/labs", so you can move into the labs directory
 1. Run "ipython notebook" in the terminal window
-1. Type "cd labs", so you can move into the labs directory
 1. Go to your browser and see that you have three notebooks showing up
 1. Run (i.e. click on) notebooks in the following order
 	* classification
