@@ -342,11 +342,9 @@ if $\gamma = 0.8$, ${Q}(HALL, To-CAVE) = 0 + \gamma * 100 = 80$
 * If we know the model, full blown value iteration
 * Otherwise 
 	* Q-learning, 
-		$Qs,a) \gets Q(s,a) + \eta\left[R(s,a) + \gamma \max\limits_{a' \in A}Q(s',a') -
-Q(s,a) \right]$
+		$Qs,a) \gets Q(s,a) + \eta\left[R(s,a) + \gamma \max\limits_{a' \in A}Q(s',a') - Q(s,a) \right]$
 	* SARSA(0), 
-		$Q(s,a) \gets Q(s,a) + \eta\left[R(s,a) + \gamma Q(s',a') -
-Q(s,a) \right]$
+		$Q(s,a) \gets Q(s,a) + \eta\left[R(s,a) + \gamma Q(s',a') - Q(s,a) \right]$
 	* SARSA(1)/MC,
 		$Q(s,a) \gets Q(s,a) + \eta\left[\mathrm{v_\tau} - Q(s,a)\right]$
 		$\mathrm{v_\tau}  \gets R(s,a)+\gamma R(s',a')+...\gamma^2 R(s'',a'') + \gamma^{\tau-1}R(s^\tau, a^\tau)$ 
@@ -360,6 +358,52 @@ Q(s,a) \right]$
     * On Policy learning
 * Q-Learning: update based on the best possible next action
     * Will learn optimal policy even if acting off-policy
+
+
+## Monte Carlo Control (1)
+* Remember Q is just a mean/average
+* MC (Naive Version)
+    * Start at any state, initialise $Q_0(s,a)$ as you visit states/actions 
+    * Act $\epsilon$-greedily
+* Add all reward you have seen so far to $\mathrm{v_\tau^i}  = R(s')+ \gamma R(s'') + \gamma^2 R(s''') + \gamma^{\tau-1}R(s^\tau)$ for episode $i$
+* $Q_n(s,a) =  E_{\pi^\epsilon}[\mathrm{v_\tau^i}]  = \frac{1}{n}\sum\limits_{i=1}^{n}{\mathrm{v_\tau^i}}$, where $k$ is the times a state is visited  
+
+## Monte Carlo Control (2)
+* $\epsilon$-greedy means acting greedily $1-\epsilon$, random otherwise
+* Better to calculate mean incrementaly
+\begin{align*}
+Q_n(s,a) &= E_{\pi_n}[\mathrm{v_\tau^i}]\\
+Q_n(s,a) &= \frac{1}{n}\sum\limits_{i=1}^{n}{\mathrm{v_\tau^i}}\\
+Q_n(s,a) &= \frac{1}{n}\left(\mathrm{v_t^1} + \mathrm{v_\tau^2}....\mathrm{v_\tau^{n-1}} +  \mathrm{v_\tau^n}\right)\\
+Q_n(s,a) &= \frac{1}{n}\left(\sum\limits_{i=1}^{ n-1}{\mathrm{v_\tau^i}} +  \mathrm{v_\tau^n}\right)\\
+\end{align*}
+
+
+## Monte Carlo Control (3)
+by definition $Q_{n-1}(s,a) = \frac{1}{{n-1}}\sum\limits_{i=1}^{n-1}{\mathrm{v_\tau^i}} \implies (n-1)Q_{n-1}(s,a) =  \sum\limits_{i=1}^{n-1}{\mathrm{v_\tau^i}}$
+
+\begin{align*}
+Q_n(s,a) &= \frac{1}{n}\left((n-1)Q_{n-1}(s,a) +  \mathrm{v_\tau^n}\right) \\
+Q_n(s,a) &= \frac{1}{n}\left(Q_{n-1}(s,a)k - Q_{n-1}(s,a) + \mathrm{v_\tau^n}\right)\\
+Q_n(s,a) &= \frac{Q_{n-1}(s,a)k}{n} + \frac{-Q_{n-1}(s,a) + \mathrm{v_\tau^n}}{n}\\
+Q_n(s,a) &= Q_{n-1}(s,a) + \frac{\overbrace{\mathrm{v_\tau^n} - Q_{n-1}(s,a)}^{\textbf{MC-Error}} }{n}\\
+\end{align*}
+
+## Monte Carlo Control - Putting it all togeather
+* But $\pi^n$ changes continuously, so the distribution of rewards is non-stationary
+\begin{align*}
+Q_n(s,a) &= Q_{n-1}(s,a) + \frac{1}{n}\left[\mathrm{v_\tau^n} - Q_{n-1}(s,a) \right] \rightarrow \textbf{Bandit case}\\
+Q_n(s,a) &= Q_{n-1}(s,a) + \eta\left[\mathrm{v_\tau^n} - Q_{n-1}(s,a) \right]  \rightarrow \textbf{Full MDP case}\\
+\end{align*}
+* A Bandit is an MDP with a chain of length two (i.e. s, s') - like the initial EagleWorld, $\eta$ is a learning rate (e.g., 0.001)
+
+* MC
+    * Start at any state, initialise $Q_0(s,a)$ as you visit states/actions 
+    * Act $\epsilon$-greedily
+    * Wait until episode ends, i.e. a terminal state is hit - $\epsilon$ set to some low value, e.g., 0.1
+    * Add all reward you have seen so far to $\mathrm{v_\tau^i}  = R(s)+\gamma R(s')+...\gamma^2R(s'') + \gamma^{\tau-1}R(s^\tau)$ for episode $i$
+    * $Q_n(s,a) = Q_{n-1}(s,a) + \alpha\left[\mathrm{v_\tau^n} - Q_{n-1}(s,a) \right]$
+
 
 
 ## Function Approximation
@@ -387,10 +431,7 @@ Intelligence) into one coherent whole
 * RL is a massive topic
 * We have shown the tip of iceberg
 * Rabbit hole goes *deep* - both on the application level and the theory level
-* Essex CS Department has a PhD programme associated with RL
-    * IGGI Centre
-    * Four year long PhD programme
-    * Chance to use RL in Computer Games
+
 
 
 ## Further study (1)
