@@ -173,7 +173,7 @@ world.
 
 ## Example MDP - EagleWorld
 \center
-\includegraphics[scale=0.33]{figures/MDPExample-simple2.png}
+\includegraphics[scale=0.30]{figures/MDPExample-simple2.png}
 
 ## Agent Goals
 * The agent's goal is to maximise its long term reward $\mathbb{E}_{\pi}\left[\sum\limits_{t=0}^\infty{\gamma^tR \left( s^{t},a^t \right)}\right]$
@@ -223,7 +223,7 @@ dynamics
 
 
 ## Example MDP - EagleWorld - Random Policy
-\includegraphics[scale=0.33]{figures/MDPExample-simple2.png}
+\includegraphics[scale=0.30]{figures/MDPExample-simple2.png}
 
 \small
 \center
@@ -249,7 +249,7 @@ $V^\pi(Flying) = 0.5, Q^\pi(Flying, Attack\_Turtle) +0.5, Q(Flying, Attack\_Boar
 
 
 ## Example MDP - EagleWorld - Optimal Policy
-\includegraphics[scale=0.33]{figures/MDPExample-simple2.png}
+\includegraphics[scale=0.30]{figures/MDPExample-simple2.png}
 
 \small
 \center
@@ -446,7 +446,6 @@ http://www0.cs.ucl.ac.uk/staff/D.Silver/web/Teaching.html
 * Reinforcement Learning, by Richard S. Sutton and Andrew G. Barto
     * Classic book
     * Excellent treatment of most subjects
-    * Up to Chapter 5
 
 
 ## Further Study (2)
@@ -460,4 +459,3 @@ of the field
 * Reinforcement Learning: State-Of-The-Art by Marco Wiering (Editor), Martijn
 Van Otterlo (Editor)
     * Edited Volume
-    * Chapter 1
