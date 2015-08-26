@@ -1,6 +1,7 @@
 RL labs instructions
 ===
 1. Login to linux (reboot if necessary)
+1  Instally ipython notebook by typing `easy_install --user --upgrade "ipython[notebook]"`
 1. Type `git clone https://github.com/ssamot/RL_notebook.git`
 1. Type `cd ~/Documents/RL_notebook`, so you can move into the labs directory
 1. Run 'ipython notebook' in the terminal window
