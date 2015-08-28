@@ -1,8 +1,12 @@
 % A (gentle) introduction \
   to \
   Reinforcement Learning
-% Spyros Samothrakis
+% Spyros Samothrakis \
+  Research Fellow, IADS \
+  Univerisity of Essex 
 % August 28, 2014
+
+
 
 
 
@@ -25,7 +29,7 @@ optimal behaviour, it has to be discovered!
 * It subsumes most artificial intelligence problems
 * Forms the basis of most modern intelligent agent frameworks
 * Ideas drawn from a wide range of contexts, including psychology (e.g.,
-Skinner's "Operant Conditioning"), philosophy, neuroscience, operations research
+Skinner's "Operant Conditioning"), philosophy, neuroscience, operations research, **Cybernetics**
 
 
 ## Examples of Reinforcement Learning closer to CS
@@ -143,6 +147,8 @@ world.
     * Fishing can get you better quality of fish (more reward), but you might also get no fish at all (no reward)!
     * Going to the restaurant is a low-risk, low-reward alternative 
 
+# Planning
+
 ## Fishing Toon: Pictorial Depiction
 \includegraphics[scale = 0.12]{figures/stick.png}
 
@@ -193,10 +199,8 @@ the best
     * How much time/effort should be spend exploring for solutions?
     * How much time should be spend exploiting good solutions?
 
-# Model Based Reinforcement Learning
 
-## Model Based Reinforcement Learning
-* ...also known as planning in certain contexts
+## Planning
 * Who was doing the thinking in the previous example (You? The eagle?)
 * An agent has access to model, i.e., has a copy of the MDP (the outside world)
 in its mind
@@ -206,7 +210,7 @@ in its mind
 dynamics
 * "This and that will happen if I push the chair"
 * Thinking, introspection...
-
+* If the model is learned, sometimes it's called "Model Based RL"
 
 ## Bellman Expectation Equations / Bellman Backups
 * The two most important equations related to MDP
