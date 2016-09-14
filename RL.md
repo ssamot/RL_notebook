@@ -1,10 +1,11 @@
 % A (gentle) introduction \
   to \
-  Reinforcement Learning
+  Reinforcement Learning \
+  ( with some links to causal reasoning)
 % Spyros Samothrakis \
   Research Fellow, IADS \
   Univerisity of Essex 
-% August 28, 2014
+% September 15, 2016
 
 
 
@@ -58,7 +59,7 @@ agent landing from state $s$ to state $s'$ after taking $a$
 * States represent sufficient statistics.
 * Markov Property ensures that we only care about the present in order to act -
 we can safely ignore past states
-* Think Tetris - all information are can be captured by a single screen-shot
+* Think Tetris - all information can be captured by a single screen-shot
 
 \begin{columns}[T] % align columns
 \begin{column}{.48\textwidth}
@@ -108,9 +109,10 @@ level is low, a fish in water, pacman with a high score)
 * Money in modern societies
 * Army Medals ("Gamification")
 * Vehicle routing
-	* (-Fuel spend on a flight)
+	* (-Fuel spent on a flight)
 	* (+ Distance Covered)
 * Cold/Hot
+* Do you think there is an almost universal reward in modern societies?
 
 
 ## Long Term Thinking
@@ -337,21 +339,19 @@ if $\gamma = 0.8$, ${Q}(HALL, To-CAVE) = 0 + \gamma * 100 = 80$
 * Choose actions at random - but this can be very slow
 * $\epsilon-greedy$ is the most common method
 * Act $\epsilon$-greedily
-    * $\pi^\epsilon(s,a) = \twopartdefo{ 1-\epsilon + \epsilon/|A| }{ a = \argmax\limits_{a \in A}  Q(s,a)}{\epsilon/|A|}$
+    * $\pi^\epsilon(s,a) = \twopartdefo{ a = \argmax\limits_{a \in A}  Q(s,a)  }{ 1-\epsilon + \epsilon/|A|}{U_a}$
     * $\epsilon$-greedy means acting greedily with probability $1-\epsilon$, random otherwise
 * When you are done, act greedily $\pi(s) = \argmax\limits_{a \in A}  Q(s,a)$
 
 ## Algorithms for non-deterministic settings
 * What can we do if the MDP is not deterministic?
-* If we know the model, full blown value iteration
-* Otherwise 
-	* Q-learning, 
-		$Qs,a) \gets Q(s,a) + \eta\left[R(s,a) + \gamma \max\limits_{a' \in A}Q(s',a') - Q(s,a) \right]$
-	* SARSA(0), 
-		$Q(s,a) \gets Q(s,a) + \eta\left[R(s,a) + \gamma Q(s',a') - Q(s,a) \right]$
-	* SARSA(1)/MC,
-		$Q(s,a) \gets Q(s,a) + \eta\left[\mathrm{v_\tau} - Q(s,a)\right]$
-		$\mathrm{v_\tau}  \gets R(s,a)+\gamma R(s',a')+...\gamma^2 R(s'',a'') + \gamma^{\tau-1}R(s^\tau, a^\tau)$ 
+* Q-learning
+    * $Qs,a) \gets Q(s,a) + \eta\left[R(s,a) + \gamma \max\limits_{a' \in A}Q(s',a') - Q(s,a) \right]$
+* SARSA(0) 
+    * $Q(s,a) \gets Q(s,a) + \eta\left[R(s,a) + \gamma Q(s',a') - Q(s,a) \right]$
+* SARSA(1)/MC,
+    * $Q(s,a) \gets Q(s,a) + \eta\left[\mathrm{v_\tau} - Q(s,a)\right]$
+    * $\mathrm{v_\tau}  \gets R(s,a)+\gamma R(s',a')+...\gamma^2 R(s'',a'') + \gamma^{\tau-1}R(s^\tau, a^\tau)$ 
 * $\eta$ is a small learning rate, e.g., $\eta = 0.001$
 
 
@@ -369,8 +369,8 @@ if $\gamma = 0.8$, ${Q}(HALL, To-CAVE) = 0 + \gamma * 100 = 80$
 * MC (Naive Version)
     * Start at any state, initialise $Q_0(s,a)$ as you visit states/actions 
     * Act $\epsilon$-greedily
-* Add all reward you have seen so far to $\mathrm{v_\tau^i}  = R(s')+ \gamma R(s'') + \gamma^2 R(s''') + \gamma^{\tau-1}R(s^\tau)$ for episode $i$
-* $Q_n(s,a) =  E_{\pi^\epsilon}[\mathrm{v_\tau^i}]  = \frac{1}{n}\sum\limits_{i=1}^{n}{\mathrm{v_\tau^i}}$, where $k$ is the times a state is visited  
+* Add all reward you have seen so far to $\mathrm{v_\tau^i}  = R(s',a')+ \gamma R(s'',a'') + \gamma^2 R(s''',a''') + \gamma^{\tau-1}R(s^\tau, a^\tau)$ for episode $i$
+* $Q_n(s,a) =  E_{\pi^\epsilon}[\mathrm{v_\tau^i}]  = \frac{1}{n}\sum\limits_{i=1}^{n}{\mathrm{v_\tau^i}}$, where $n$ is the times a state is visited  
 
 ## Monte Carlo Control (2)
 * $\epsilon$-greedy means acting greedily $1-\epsilon$, random otherwise
@@ -388,34 +388,70 @@ by definition $Q_{n-1}(s,a) = \frac{1}{{n-1}}\sum\limits_{i=1}^{n-1}{\mathrm{v_\
 
 \begin{align*}
 Q_n(s,a) &= \frac{1}{n}\left((n-1)Q_{n-1}(s,a) +  \mathrm{v_\tau^n}\right) \\
-Q_n(s,a) &= \frac{1}{n}\left(Q_{n-1}(s,a)k - Q_{n-1}(s,a) + \mathrm{v_\tau^n}\right)\\
-Q_n(s,a) &= \frac{Q_{n-1}(s,a)k}{n} + \frac{-Q_{n-1}(s,a) + \mathrm{v_\tau^n}}{n}\\
+Q_n(s,a) &= \frac{1}{n}\left(Q_{n-1}(s,a)n - Q_{n-1}(s,a) + \mathrm{v_\tau^n}\right)\\
+Q_n(s,a) &= \frac{Q_{n-1}(s,a)n}{n} + \frac{-Q_{n-1}(s,a) + \mathrm{v_\tau^n}}{n}\\
 Q_n(s,a) &= Q_{n-1}(s,a) + \frac{\overbrace{\mathrm{v_\tau^n} - Q_{n-1}(s,a)}^{\textbf{MC-Error}} }{n}\\
 \end{align*}
 
-## Monte Carlo Control - Putting it all togeather
+## Monte Carlo Control (4)
 * But $\pi^n$ changes continuously, so the distribution of rewards is non-stationary
 \begin{align*}
 Q_n(s,a) &= Q_{n-1}(s,a) + \frac{1}{n}\left[\mathrm{v_\tau^n} - Q_{n-1}(s,a) \right] \rightarrow \textbf{Bandit case}\\
 Q_n(s,a) &= Q_{n-1}(s,a) + \eta\left[\mathrm{v_\tau^n} - Q_{n-1}(s,a) \right]  \rightarrow \textbf{Full MDP case}\\
 \end{align*}
-* A Bandit is an MDP with a chain of length two (i.e. s, s') - like the initial EagleWorld, $\eta$ is a learning rate (e.g., 0.001)
+* A Bandit can be seen as MDP with a chain of length one (i.e. s) - like the initial EagleWorld, $\eta$ is a learning rate (e.g., 0.001)
 
-* MC
-    * Start at any state, initialise $Q_0(s,a)$ as you visit states/actions 
-    * Act $\epsilon$-greedily
-    * Wait until episode ends, i.e. a terminal state is hit - $\epsilon$ set to some low value, e.g., 0.1
-    * Add all reward you have seen so far to $\mathrm{v_\tau^i}  = R(s)+\gamma R(s')+...\gamma^2R(s'') + \gamma^{\tau-1}R(s^\tau)$ for episode $i$
-    * $Q_n(s,a) = Q_{n-1}(s,a) + \alpha\left[\mathrm{v_\tau^n} - Q_{n-1}(s,a) \right]$
+## Monte Carlo Control (5)
+* Start at any state, initialise $Q_0(s,a)$ as you visit states/actions 
+* Act $\epsilon$-greedily
+* Wait until episode ends, i.e. a terminal state is hit - $\epsilon$ set to some low value, e.g., 0.1
+* Add all reward you have seen so far to $\mathrm{v_\tau^i}  = R(s,a)+\gamma R(s',a')+...\gamma^2R(s'',a'') + \gamma^{\tau-1}R(s^\tau, a^\tau)$ for episode $i$
+* $Q_n(s,a) = Q_{n-1}(s,a) + \eta\left[\mathrm{v_\tau^n} - Q_{n-1}(s,a) \right]$
+
+## From monte carlo control to SARDA and Q-Learning
+* With MC we update using the rewards from the whole chain
+* Can we update incrementally? 
+
+\tiny
+\begin{align*}
+Q_n(s,a) &= Q_{n-1}(s,a) + \eta\left[\mathrm{v_\tau^n} - Q_{n-1}(s,a) \right]\\
+Q_n(s,a) &= Q_{n-1}(s,a) + \eta\left[R(s,a)+\gamma R(s',a')+...\gamma^2R(s'',a'') + \gamma^{\tau-1}R(s^\tau, a^\tau) - Q_{n-1}(s,a) \right]\\
+Q_n(s,a) &= Q_{n-1}(s,a) + \eta\left[R(s,a)+\gamma ( R(s',a')+...\gamma R(s'',a'') + \gamma^{\tau-2}R(s^\tau, a^\tau)) - Q_{n-1}(s,a) \right]\\
+Q_n(s,a) &= Q_{n-1}(s,a) + \eta\left[R(s,a)+\gamma ( \mathrm{v_\tau^{n,(s',a')}} ) - Q_{n-1}(s,a) \right]\\
+Q_n(s,a) &= Q_{n-1}(s,a) + \eta\left[R(s,a)+\gamma Q_{n-1}(s',a')  - Q_{n-1}(s,a) \right]\\
+\end{align*}
 
 
+## n-step returns
 
-## Function Approximation
+\includegraphics[scale=0.60]{figures/returns.png}
+
+From Temporal Different to Monte Carlo (From Sutton \& Burto)
+
+
+## Let's go over the toon example, without a model
+
+* $\epsilon-greedy$, with $\epsilon = 0.1$
+
+## Function approximation
 * There is usually some link between states
 * We can train function approximators incrementally to model $Q(s,a)$
-* Examples include Linear Function approximators, Neural Networks, n-tuple networks
+* We now have $Q(s,a;\theta)$, where $\theta$ are the parameters 
+* Examples include Linear function approximators, Neural Networks, n-tuple networks
 * Not easy to do, few convergance guarrantees
     * But with some effort, this works pretty well
+    
+    
+## Famous function approximation examples
+* Computer GO
+* Car Driving
+* Can you name another problem?
+
+
+## Platforms
+* Let's look at open AI gym
+* A lot of modern work is a combination of RL with Neural Networks
+
 
 ## Relationship to the rest of Machine Learning
 * How can one learn a model of the world?
@@ -428,6 +464,31 @@ Intelligence) into one coherent whole
 * The purpose of all learning is action!
     * You need to be able to recognise faces so you can create state
     * ... and act on it
+
+## Causality (bonus)
+
+* We often colliqually say "A is caused by B"
+* Can you discuss the meaning of this?
+
+
+
+## Counterfactuals
+* If I take action $a$ I land on state $s$ 
+* What if I don't take action $a$?'
+* "Experimenter forced you to pick up smoking" vs
+* "Experimenter observed that you smoked"
+* Will you get lung disease?
+* The experimenter takes the actions vs observes
+
+## What is the link? 
+
+* Off-policy evaluation learning
+* Let's see an example
+    * Features are color of hair, height, smoking
+    * Reward is -1000 (lung disease), 1 (healthy)
+* This would have been supervised learning if we knew the policy!
+* Let's see a possible example of data
+* Can you write down an example policy?
 
 
 ## Conclusion
