@@ -1,7 +1,7 @@
 % A (gentle) introduction \
   to \
   Reinforcement Learning \
-  ( with some links to causal reasoning)
+  (with some links to causal reasoning)
 % Spyros Samothrakis \
   Research Fellow, IADS \
   Univerisity of Essex 
@@ -464,6 +464,9 @@ Intelligence) into one coherent whole
 * The purpose of all learning is action!
     * You need to be able to recognise faces so you can create state
     * ... and act on it
+
+
+# Causality
 
 ## Causality (bonus)
 
