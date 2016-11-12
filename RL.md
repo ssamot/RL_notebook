@@ -1,11 +1,11 @@
-% A (gentle) introduction \
+% An introduction \
   to \
   Reinforcement Learning \
-  (with some links to causal reasoning)
+  (with an intro to neural networks and causal reasoning)
 % Spyros Samothrakis \
   Research Fellow, IADS \
   Univerisity of Essex 
-% September 15, 2016
+% November 14, 2016
 
 
 
@@ -31,6 +31,7 @@ optimal behaviour, it has to be discovered!
 * Forms the basis of most modern intelligent agent frameworks
 * Ideas drawn from a wide range of contexts, including psychology (e.g.,
 Skinner's "Operant Conditioning"), philosophy, neuroscience, operations research, **Cybernetics**
+* Modern Reinforcement Learning research has fused with Neural Networks Research
 
 
 ## Examples of Reinforcement Learning closer to CS
@@ -40,6 +41,8 @@ Skinner's "Operant Conditioning"), philosophy, neuroscience, operations research
 * Elevator scheduling
 * Optimising a petroleum refinery
 * Optimal drug dosage
+* Create NPCs
+
 
 
 # Markov Decision Process (MDPs)
@@ -77,6 +80,8 @@ Original Tetris
 \end{column}%
 \end{columns}
 
+
+
 ## Agents, Actions and Transitions
 * An agent is an entity capable of actions
 * An MDP can capture any environment that is inhabited either by 
@@ -87,6 +92,14 @@ Original Tetris
 * The agent perceives states/rewards and outputs actions
 * Transitions specify the effects of actions in the world (e.g., in Tetris, you
 push a button, the block spins)
+
+## More on states, agents and actions
+
+* Pick a game
+  * What would be state in the game? 
+    * Do agents/NPCs have access to it? 
+  * Do agents/NPCs have access to actions
+  * Do agents/NPCs have access to transitions?
 
 
 
@@ -107,7 +120,7 @@ level is low, a fish in water, pacman with a high score)
 * The distance a robot walked for a bipedal robot
 * The amount of food an animal eats
 * Money in modern societies
-* Army Medals ("Gamification")
+* Army medals ("Gamification")
 * Vehicle routing
 	* (-Fuel spent on a flight)
 	* (+ Distance Covered)
@@ -139,7 +152,12 @@ transitions
 * Notice the lack of body - "brain in a vat". Body is assumed to be part of the
 world.
 
-\center\includegraphics[scale=0.33]{figures/RL.png}
+\center
+\begin{overpic}[scale=1.3]{new_figures/RL.jpg}
+\put (35,10) {Output Actions}
+\put (35,25) {Receive Rewards}
+\put (35,45) {Observe States}
+\end{overpic}
 
 ## Fishing Toon
 * Assume a non-player character (let's call her *toon*)
@@ -152,20 +170,62 @@ world.
 # Planning
 
 ## Fishing Toon: Pictorial Depiction
-\includegraphics[scale = 0.12]{figures/stick.png}
+\center
+\begin{overpic}[scale=1.3]{new_figures/stick.jpg}
+\put (10,37) {\small{\rotatebox{-45}{Go-Fishing,R=2}}}
+\put (10,62) {\small{\rotatebox{45}{Go-to-Restaurant,R=-0.1}}}
+
+\put (52,72) {\small{\rotatebox{0}{1.0}}}
+\put (52,43) {\small{\rotatebox{0}{0.8}}}
+\put (52,22) {\small{\rotatebox{0}{0.2}}}
+
+\put (73,75) {\small{\rotatebox{0}{1}}}
+\put (73,48) {\small{\rotatebox{0}{0}}}
+\put (73,26) {\small{\rotatebox{0}{10}}}
+
+\put (82,72) {\small{\rotatebox{0}{Eat-1-fish,R=1}}}
+\put (82,47) {\small{\rotatebox{0}{Eat-0-fish,R=0}}}
+\put (82,21) {\small{\rotatebox{0}{Eat-10-fish,R=10}}}
+\end{overpic}
 
 
-## Expected Reward
+
+## Sum of Expected Rewards
 * Our toon has to choose between two different actions
 * \texttt{Go-To-Restaurant} or \texttt{Go-Fishing}
 * We assume that toon is interested in maximising *the expected sum* of happiness/reward
 * We can help the toon reason using the tree backwards  
 
 ## Reasoning Backwards (1)
-\includegraphics[scale = 0.12]{figures/stick1.png}
+\center
+\begin{overpic}[scale=1.3]{new_figures/stick1.jpg}
+\put (10,37) {\small{\rotatebox{-45}{Go-Fishing,R=-0.1}}}
+\put (10,62) {\small{\rotatebox{45}{Go-to-Restaurant,R=0}}}
+
+\put (52,72) {\small{\rotatebox{0}{1.0}}}
+\put (52,43) {\small{\rotatebox{0}{0.8}}}
+\put (52,22) {\small{\rotatebox{0}{0.2}}}
+
+\put (63,72) {\small{\rotatebox{0}{$Q^*(Restaurant,Eat\mhyphen1\mhyphen fish)=1$}}}
+\put (63,44) {\small{\rotatebox{0}{$Q^*(Pond,Eat\mhyphen0\mhyphen fish)=0$}}}
+\put (63,20) {\small{\rotatebox{0}{$Q^*(Pond,\mathit{Eat\mhyphen 10\mhyphen fish)=10}$}}}
+
+\end{overpic}
+
+
+
+
+
 
 ## Reasoning Backwards (2)
-\includegraphics[scale = 0.12]{figures/stick2.png}
+\center
+\begin{overpic}[scale=1.3]{new_figures/stick2.jpg}
+
+
+\put (20,72) {\small{\rotatebox{0}{$Q^*(Start,Go\mhyphen to \mhyphen Restaurant)=1$}}}
+\put (20,24) {\small{\rotatebox{0}{$Q^*(Start,Go\mhyphen Fishing)=0.2 * 10 + 0.*8 * 0.0  - 0.1 = 1.9$}}}
+
+\end{overpic}
 
 
 ## Correct Action
@@ -179,15 +239,12 @@ world.
     * How about toon goes to the restaurant after failing to fish? 
     * How would that change the reward structure?
 
-## Example MDP - EagleWorld
-\center
-\includegraphics[scale=0.30]{figures/MDPExample-simple2.png}
 
 ## Agent Goals
 * The agent's goal is to maximise its long term reward $\mathbb{E}_{\pi}\left[\sum\limits_{t=0}^\infty{\gamma^tR \left( s^{t},a^t \right)}\right]$
 
-* Risk Neutral Agent - think of the EagleWorld example
-* Rewards can be anything, but most organisms receive rewards only in a very limited amount of states (e.g., fish in water)
+* Risk Neutral Agent - think of the example above
+* Rewards can be anything, but most agents receive rewards only in a very limited amount of states (e.g., fish in water)
 * What if your reward signal is only money?
     * Sociopathic, egotistic, greed-is-good Gordon Gekko (*Wall Street*, 1987)
     * No concept of "externalities" - agents might wreak havoc for marginal reward gains
@@ -203,8 +260,7 @@ the best
 
 
 ## Planning
-* Who was doing the thinking in the previous example (You? The eagle?)
-* An agent has access to model, i.e., has a copy of the MDP (the outside world)
+* An agent has access to model, i.e. has a copy of the MDP (the outside world)
 in its mind
 * Using that copy, it tries to "think" what is the best route of action
 * It then executes this policy on the real world MDP
@@ -226,20 +282,7 @@ dynamics
 * $V$ and $Q$ are interrelated
 * $V^\pi(s) =  \sum\limits_{a \in A} \pi(s,a) Q^\pi(s,a)$
 * $Q^\pi(s,a) = R(s,a) + \sum\limits_{s' \in S} T(s'|s,a) V^\pi(s')$
-
-
-## Example MDP - EagleWorld - Random Policy
-\includegraphics[scale=0.30]{figures/MDPExample-simple2.png}
-
-\small
-\center
-\textcolor{red}{
-$\pi(Flying, Attack\_Boar) = 0.5, \pi(Flying,Attack\_Turtle) = 0.5$
-$Q(Flying, Attack\_Boar)   = 0.99 * (10 * 0.5 + 0.5*-1) = 4.455$
-$Q(Flying, Attack\_Turtle) = 0.99 * (0.9 * 3 + 0.1*-1) = 2.574$
-$V^\pi(Flying) = 0.5, Q^\pi(Flying, Attack\_Turtle) +0.5, Q(Flying, Attack\_Boar) = 3.5145$
-}
-
+* **V-values are defined on states, Q-values on policies!**
 
 ## Optimal Policy and the Bellman Optimality Equation
 * An optimal policy can be defined in terms of Q-values
@@ -253,18 +296,16 @@ $V^\pi(Flying) = 0.5, Q^\pi(Flying, Attack\_Turtle) +0.5, Q(Flying, Attack\_Boar
 * $V(s)^* =  \max\limits_{a \in A} Q^*(s,a)$
 * $Q^*(s,a) = R(s,a) + \gamma\sum\limits_{s' \in S} T(s'|s,a) V^*(s')$
 
+* Let's assume that toon has another option
+  * She can go and buy and eat some meat with a reward of 1.5
+  * Or go down the fish route
+  * Write down the MDP
+    * Find out the new Q and V values with:
+      * Toon acting randomly on choosing a decision point
+      * Toon choosing action $Go\mhyphen Fishing$
+      * Toon choosing action $Go\mhyphen to\mhyphen Restaurant$ 
+   
 
-## Example MDP - EagleWorld - Optimal Policy
-\includegraphics[scale=0.30]{figures/MDPExample-simple2.png}
-
-\small
-\center
-\textcolor{red}{
-$Q(Flying, Attack\_Boar)   = 0.99 * (10 * 0.5 + 0.5*-1) = 4.455$
-$Q(Flying, Attack\_Turtle) = 0.99 * (0.9 * 3 + 0.1*-1) = 2.574$
-$\pi^*(Flying, Attack\_Boar) = 1$, $\pi^*(Flying,Attack\_Turtle) = 0$
-$V^*(Flying) =  Q(Flying,Attack\_Boar) = 4.455 $
-}
 
 ## Agents Revisited
 * An Agent can be composed of a number of things
@@ -273,8 +314,9 @@ $V^*(Flying) =  Q(Flying,Attack\_Boar) = 4.455 $
   * A Model of the environment (the MDP)
   * Inference/Learning Mechanisms
   * ...
-* An agent has to be able to *create a policy* either on the fly or using Q-Values
+* An agent has to be able to *discover a policy* either on the fly or using Q-Values
 * The Model/Q/V-Values serve as intermediate points towards constructing a policy
+  * Not all RL algorithms used that (but most do)...
 
 
 
@@ -285,7 +327,7 @@ $V^*(Flying) =  Q(Flying,Attack\_Boar) = 4.455 $
 * Thus, taking an action on a state will lead only to ONE other possible state for some action $a_c$
 	* $T(s'|s,a_i) = \twopartdefo{ 1 } {a_i = a_c} {0}$
 	* $V^*(s) = \max\limits_{a \in A} \left[ R(s,a) + \gamma V^*(s') \right]$
-	* $Q(s,a) =  R(s,a) + \gamma \max\limits_{a' \in A} {{Q}(s',a')}$
+	* $Q^*(s,a) =  R(s,a) + \gamma \max\limits_{a' \in A} {{Q}(s',a')}$
 * It is easier now to solve for problems that have loops in them
 * We can also attempt to learn Q-Values without a model!
 * All we need in order to find the optimal policy is $Q(s,a)$
@@ -303,23 +345,35 @@ $V^*(Flying) =  Q(Flying,Attack\_Boar) = 4.455 $
 
 
 ## An Example (1)
-(From Paul Scott's ML lecture notes)
+
 \center
-\includegraphics[scale=0.30]{figures/example1.png}
+\begin{overpic}[scale=0.6]{new_figures/example_maze.jpg}
+\put (48,45) {\small{\rotatebox{0}{A}}}
 
-$R(HALL, To-CAVE) = 0$
+\end{overpic}
 
-${Q}(CAVE,a) = 0$ for all actions a 
+
+
+$R(HALL, To\mhyphen CAVE) = 0$
+
+${Q}(CAVE,a) = 0$ for all actions $a$ 
 
 ## An Example (2)
 Next suppose the agent, now in state CAVE , selects action $To-GOAL$
 
-$R(CAVE, To-GOAL) = 100$, ${Q}(GOAL,a) = 0$ for all actions (there are no actions)
+$R(CAVE, To\mhyphen GOAL) = 100$, ${Q}(GOAL,a) = 0$ for all actions (there are no actions)
 
-Hence ${Q}(CAVE, To-GOAL) = 100 + \gamma * 0 = 100$
+Hence ${Q}(CAVE, To\mhyphen GOAL) = 100 + \gamma * 0 = 100$
+
 
 \center
-\includegraphics[scale=0.20]{figures/example2.png}
+\begin{overpic}[scale=0.5 ]{new_figures/example_maze.jpg}
+
+
+\put (70,82) {\small{\rotatebox{0}{$100$}}}
+
+\end{overpic}
+
 
 ## An Example (3)
 Let's start at hall again and select the same action To-CAVE 
@@ -332,7 +386,14 @@ Hence $\max\limits_{a \in A} {Q}(CAVE,a) = 100$,
 if $\gamma = 0.8$, ${Q}(HALL, To-CAVE) = 0 + \gamma * 100 = 80$
 
 \center
-\includegraphics[scale=0.20]{figures/example3.png}
+\center
+\begin{overpic}[scale=0.5 ]{new_figures/example_maze.jpg}
+
+
+\put (55,65) {\small{\rotatebox{0}{$80$}}}
+\put (70,82) {\small{\rotatebox{0}{$100$}}}
+
+\end{overpic}
 
 ## Exploration / Exploitation
 * How do we best explore?
@@ -408,7 +469,7 @@ Q_n(s,a) &= Q_{n-1}(s,a) + \eta\left[\mathrm{v_\tau^n} - Q_{n-1}(s,a) \right]  \
 * Add all reward you have seen so far to $\mathrm{v_\tau^i}  = R(s,a)+\gamma R(s',a')+...\gamma^2R(s'',a'') + \gamma^{\tau-1}R(s^\tau, a^\tau)$ for episode $i$
 * $Q_n(s,a) = Q_{n-1}(s,a) + \eta\left[\mathrm{v_\tau^n} - Q_{n-1}(s,a) \right]$
 
-## From monte carlo control to SARDA and Q-Learning
+## From monte carlo control to SARSA and Q-Learning
 * With MC we update using the rewards from the whole chain
 * Can we update incrementally? 
 
@@ -424,33 +485,64 @@ Q_n(s,a) &= Q_{n-1}(s,a) + \eta\left[R(s,a)+\gamma Q_{n-1}(s',a')  - Q_{n-1}(s,a
 
 ## n-step returns
 
-\includegraphics[scale=0.60]{figures/returns.png}
+\center
+\includegraphics[scale=0.90]{new_figures/returns.jpg}
 
-From Temporal Different to Monte Carlo (From Sutton \& Burto)
+
 
 
 ## Let's go over the toon example, without a model
 
 * $\epsilon-greedy$, with $\epsilon = 0.1$
 
-## Function approximation
+
+## Model free toon
+
+\center
+\begin{overpic}[scale=1.3]{new_figures/stick.jpg}
+
+\end{overpic}
+
+## Function approximation (1)
 * There is usually some link between states
 * We can train function approximators incrementally to model $Q(s,a)$
 * We now have $Q(s,a;\theta)$, where $\theta$ are the parameters 
-* Examples include Linear function approximators, Neural Networks, n-tuple networks
-* Not easy to do, few convergance guarrantees
+
+\center
+\includegraphics[scale=0.60]{new_figures/imagination.jpg}
+
+
+## Function approximation (2)
+
+* What are the links in states in Toon? 
+* Can we write down the Q-values in a more compact way?
+  * Let's devise a tree to do this
+* Examples include linear function approximators, neural networks, n-tuple networks
+* Not easy to do, few convergence guarantees
     * But with some effort, this works pretty well
-    
-    
-## Famous function approximation examples
-* Computer GO
-* Car Driving
-* Can you name another problem?
+
+
+
+## Neural Networks and Function Approximation
+* Most common modern function approximation scheme is neural networks
+* Can approximate almost any function
+* We had a series of recent advances
+  * Go
+  * Atari
 
 
 ## Platforms
 * Let's look at open AI gym
-* A lot of modern work is a combination of RL with Neural Networks
+* A lot of modern work is a combination of RL with neural networks
+* We have good libraries now
+
+
+## More on neural networks
+* A function approximator loosely based on the brain
+* Main idea - a graph of neurons
+  * Multiple layers
+  * Of a certain type of neurons
+  * Multiple types of training methods
 
 
 ## Relationship to the rest of Machine Learning
@@ -468,7 +560,7 @@ Intelligence) into one coherent whole
 
 # Causality
 
-## Causality (bonus)
+## Causality (a very brief intro)
 
 * We often colliqually say "A is caused by B"
 * Can you discuss the meaning of this?
@@ -487,7 +579,7 @@ Intelligence) into one coherent whole
 
 * Off-policy evaluation learning
 * Let's see an example
-    * Features are color of hair, height, smoking
+    * Features are colour of hair, height, smoking
     * Reward is -1000 (lung disease), 1 (healthy)
 * This would have been supervised learning if we knew the policy!
 * Let's see a possible example of data

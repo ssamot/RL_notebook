@@ -9,13 +9,18 @@ $if(fonttheme)$
 \usefonttheme{$fonttheme$}
 $endif$
 
+
+
 \setbeamertemplate{caption}[numbered]
 \setbeamertemplate{caption label separator}{:}
 \setbeamercolor{caption name}{fg=normal text.fg}
 \usepackage{amssymb,amsmath}
 \usepackage{ifxetex,ifluatex}
+\usepackage{xcolor}
 \usepackage{fixltx2e} % provides \textsubscript
 \usepackage{lmodern}
+\usepackage[percent]{overpic}
+
 \ifxetex
   \usepackage{fontspec,xltxtra,xunicode}
   \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
@@ -168,6 +173,7 @@ $endfor$
 }
 
 \DeclareMathOperator*{\argmax}{arg\,max}
+\mathchardef\mhyphen="2D
 
 $if(title)$
 \title{$title$}
