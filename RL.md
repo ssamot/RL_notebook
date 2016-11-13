@@ -31,7 +31,7 @@ optimal behaviour, it has to be discovered!
 * Forms the basis of most modern intelligent agent frameworks
 * Ideas drawn from a wide range of contexts, including psychology (e.g.,
 Skinner's "Operant Conditioning"), philosophy, neuroscience, operations research, **Cybernetics**
-* Modern Reinforcement Learning research has fused with Neural Networks Research
+* Modern Reinforcement Learning research has fused with Neural Networks research
 
 
 ## Examples of Reinforcement Learning closer to CS
@@ -100,6 +100,7 @@ push a button, the block spins)
     * Do agents/NPCs have access to it? 
   * Do agents/NPCs have access to actions
   * Do agents/NPCs have access to transitions?
+* We will come back to these questions later
 
 
 
@@ -194,7 +195,71 @@ world.
 * Our toon has to choose between two different actions
 * \texttt{Go-To-Restaurant} or \texttt{Go-Fishing}
 * We assume that toon is interested in maximising *the expected sum* of happiness/reward
-* We can help the toon reason using the tree backwards  
+* Let's first see what happens if we start with a random policy
+
+
+    |  Policy | Policy Value  | Q-Values  |   |   |
+    |---|---|---|---|---|
+    | $\pi(Start, Go\mhyphen Fishing)$   |  $0.5$ |   |   |   |
+    | $\pi(Start, Go\mhyphen to \mhyphen Restaurant)$   |  $0.5$ |   |   |   |
+    | $\pi(Restaurant, Eat\mhyphen1\mhyphen fish)$   |  1 |   |   |   |
+    | $\pi(Pond, Eat\mhyphen0\mhyphen fish)$   |  1 |   |   |   |
+    | $\pi(Pond, Eat\mhyphen 10\mhyphen fish)$   | 1   |   |   |   |
+
+
+
+## Random Policy (1)
+\center
+\begin{overpic}[scale=1.3]{new_figures/stick1.jpg}
+\put (10,37) {\small{\rotatebox{-45}{Go-Fishing,R=-0.1}}}
+\put (10,62) {\small{\rotatebox{45}{Go-to-Restaurant,R=0}}}
+
+\put (52,72) {\small{\rotatebox{0}{1.0}}}
+\put (52,43) {\small{\rotatebox{0}{0.8}}}
+\put (52,22) {\small{\rotatebox{0}{0.2}}}
+
+\put (63,72) {\small{\rotatebox{0}{$Q^*(Restaurant,Eat\mhyphen1\mhyphen fish)=1$}}}
+\put (63,44) {\small{\rotatebox{0}{$Q^*(Pond,Eat\mhyphen0\mhyphen fish)=0$}}}
+\put (63,20) {\small{\rotatebox{0}{$Q^*(Pond,\mathit{Eat\mhyphen 10\mhyphen fish)=10}$}}}
+
+\end{overpic}
+
+
+## Random Policy (2)
+\center
+\begin{overpic}[scale=1.3]{new_figures/stick2.jpg}
+
+
+\put (20,72) {\small{\rotatebox{0}{$Q^*(Start,Go\mhyphen to \mhyphen Restaurant)=1$}}}
+\put (20,24) {\small{\rotatebox{0}{$Q^*(Start,Go\mhyphen Fishing)=0.2 * 10 + 0.*8 * 0.0  - 0.1 = 1.9$}}}
+
+\end{overpic}
+
+## Table
+
+|  Policy | Policy Value  | Q-Values  |   |   |
+|---|---|---|---|---|
+| $\pi(Start, Go\mhyphen Fishing)$   |  $0.5$ |  1 |   |   |
+| $\pi(Start, Go\mhyphen to \mhyphen Restaurant)$   |  $0.5$ | $1.9$  |   |   |
+| $\pi(Restaurant, Eat\mhyphen1\mhyphen fish)$   |  1 |  1 |   |   |
+| $\pi(Pond, Eat\mhyphen0\mhyphen fish)$   |  1 |  0 |   |   |
+| $\pi(Pond, Eat\mhyphen 10\mhyphen fish)$   | 1   |  10 |   |   |
+
+
+The V-Value of state $Start$ is $V(Start) = 0.5 * 1 + 0.5 * 1.9 = 1.45$
+
+
+## What if we are asked to find out the optimal policy?
+
+|  Policy | Policy Value  | Q-Values  |   |   |
+|---|---|---|---|---|
+| $\pi(Start, Go\mhyphen Fishing)$   |  ?|  1 |   |   |
+| $\pi(Start, Go\mhyphen to \mhyphen Restaurant)$   |  ? | $1.9$  |   |   |
+| $\pi(Restaurant, Eat\mhyphen1\mhyphen fish)$   |  1 |  1 |   |   |
+| $\pi(Pond, Eat\mhyphen0\mhyphen fish)$   |  1 |  0 |   |   |
+| $\pi(Pond, Eat\mhyphen 10\mhyphen fish)$   | 1   |  10 |   |   |
+
+
 
 ## Reasoning Backwards (1)
 \center
@@ -226,6 +291,20 @@ world.
 \put (20,24) {\small{\rotatebox{0}{$Q^*(Start,Go\mhyphen Fishing)=0.2 * 10 + 0.*8 * 0.0  - 0.1 = 1.9$}}}
 
 \end{overpic}
+
+
+## Table
+
+|  Policy | Policy Value  | Q-Values  |   |   |
+|---|---|---|---|---|
+| $\pi(Start, Go\mhyphen Fishing)$   |  **0** |  1 |   |   |
+| $\pi(Start, Go\mhyphen to \mhyphen Restaurant)$   |  **1** | $1.9$  |   |   |
+| $\pi(Restaurant, Eat\mhyphen1\mhyphen fish)$   |  1 |  1 |   |   |
+| $\pi(Pond, Eat\mhyphen0\mhyphen fish)$   |  1 |  0 |   |   |
+| $\pi(Pond, Eat\mhyphen 10\mhyphen fish)$   | 1   |  10 |   |   |
+
+
+The V-Value of state $Start$ is $V^*(Start) = max\{1,1.9\} = 1.9$
 
 
 ## Correct Action
@@ -316,7 +395,7 @@ dynamics
   * ...
 * An agent has to be able to *discover a policy* either on the fly or using Q-Values
 * The Model/Q/V-Values serve as intermediate points towards constructing a policy
-  * Not all RL algorithms used that (but most do)...
+  * Not all RL algorithms use that (but most do)...
 
 
 
@@ -522,16 +601,36 @@ Q_n(s,a) &= Q_{n-1}(s,a) + \eta\left[R(s,a)+\gamma Q_{n-1}(s',a')  - Q_{n-1}(s,a
     * But with some effort, this works pretty well
 
 
+## Policy with features
+
+
+|  Policy | Policy Value  | Q-Values  |   |   |
+|---|---|---|---|---|
+| $\pi(Start, Go\mhyphen Fishing)$   |  ? |  ? |   |   |
+| $\pi(Start, Go\mhyphen to \mhyphen Restaurant)$   |  ? | ?  |   |   |
+| $\pi(Restaurant, Eat\mhyphen \phi\mhyphen fish)$   |  1 |  $\phi$ |   |   |
+
+
+## Do we have to learning Q-Values? 
+
+* ? 
+
+
 
 ## Neural Networks and Function Approximation
 * Most common modern function approximation scheme is neural networks
 * Can approximate almost any function
 * We had a series of recent advances
-  * Go
-  * Atari
+    * Go ($10^{170}$ states)
+    * Atari ($10^{10^7}$ states)
 
 
 ## Platforms
+* Tools
+  * Keras (neural networks)
+  * Tensorflow (neural networks, but closer to the machine)
+  * \url{goo.gl/YGWSbL}
+  * Open AI gym
 * Let's look at open AI gym
 * A lot of modern work is a combination of RL with neural networks
 * We have good libraries now
@@ -539,10 +638,40 @@ Q_n(s,a) &= Q_{n-1}(s,a) + \eta\left[R(s,a)+\gamma Q_{n-1}(s',a')  - Q_{n-1}(s,a
 
 ## More on neural networks
 * A function approximator loosely based on the brain
-* Main idea - a graph of neurons
-  * Multiple layers
-  * Of a certain type of neurons
-  * Multiple types of training methods
+* Global function approximator
+  * Catastrophic forgetting....
+  * Multiple ways of breaking correlations
+      * Experience replay, asynchronous games
+* Again, think of Neural Networks as a mechanism for storing Q-Values
+
+
+## Neural Network architecture
+
+* There are certain choices that need to be made 
+  * Number of layers 
+  * Type of layers
+  * Learning algorithms
+  * Regularisation methods
+* Many different ways of building those networks
+  * Let's look at some code
+
+
+## Intuition building
+
+* Choose a game
+* Choose a character in the game
+* Chose the features that represent the character's state
+* Choose the neural network to use
+
+
+## Single player games
+
+* Everything we have seen is based on single player environments
+    * But from NPC perspective there is no such thing as single player
+    * The actual player is your opponent!
+* Domain of multiple agents interacting is *Game Theory* (or multi-agent learning)
+* Environment adapts back at you
+* Needs more tricks to get things to perform sensibly
 
 
 ## Relationship to the rest of Machine Learning
@@ -562,7 +691,7 @@ Intelligence) into one coherent whole
 
 ## Causality (a very brief intro)
 
-* We often colliqually say "A is caused by B"
+* We often colloquially say "A is caused by B"
 * Can you discuss the meaning of this?
 
 
@@ -582,8 +711,7 @@ Intelligence) into one coherent whole
     * Features are colour of hair, height, smoking
     * Reward is -1000 (lung disease), 1 (healthy)
 * This would have been supervised learning if we knew the policy!
-* Let's see a possible example of data
-* Can you write down an example policy?
+
 
 
 ## Conclusion
