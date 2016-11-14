@@ -1,7 +1,7 @@
 % An introduction \
   to \
   Reinforcement Learning \
-  (with an intro to neural networks and causal reasoning)
+  (with Neural Networks and Causality)
 % Spyros Samothrakis \
   Research Fellow, IADS \
   Univerisity of Essex 
@@ -486,7 +486,7 @@ if $\gamma = 0.8$, ${Q}(HALL, To-CAVE) = 0 + \gamma * 100 = 80$
 ## Algorithms for non-deterministic settings
 * What can we do if the MDP is not deterministic?
 * Q-learning
-    * $Qs,a) \gets Q(s,a) + \eta\left[R(s,a) + \gamma \max\limits_{a' \in A}Q(s',a') - Q(s,a) \right]$
+    * $Q(s,a) \gets Q(s,a) + \eta\left[R(s,a) + \gamma \max\limits_{a' \in A}Q(s',a') - Q(s,a) \right]$
 * SARSA(0) 
     * $Q(s,a) \gets Q(s,a) + \eta\left[R(s,a) + \gamma Q(s',a') - Q(s,a) \right]$
 * SARSA(1)/MC,
@@ -539,7 +539,7 @@ Q_n(s,a) &= Q_{n-1}(s,a) + \frac{\overbrace{\mathrm{v_\tau^n} - Q_{n-1}(s,a)}^{\
 Q_n(s,a) &= Q_{n-1}(s,a) + \frac{1}{n}\left[\mathrm{v_\tau^n} - Q_{n-1}(s,a) \right] \rightarrow \textbf{Bandit case}\\
 Q_n(s,a) &= Q_{n-1}(s,a) + \eta\left[\mathrm{v_\tau^n} - Q_{n-1}(s,a) \right]  \rightarrow \textbf{Full MDP case}\\
 \end{align*}
-* A Bandit can be seen as MDP with a chain of length one (i.e. s) - like the initial EagleWorld, $\eta$ is a learning rate (e.g., 0.001)
+* A Bandit can be seen as MDP with a chain of length one (i.e. s) -  $\eta$ is a learning rate (e.g., 0.001)
 
 ## Monte Carlo Control (5)
 * Start at any state, initialise $Q_0(s,a)$ as you visit states/actions 
@@ -595,13 +595,15 @@ Q_n(s,a) &= Q_{n-1}(s,a) + \eta\left[R(s,a)+\gamma Q_{n-1}(s',a')  - Q_{n-1}(s,a
 
 * What are the links in states in Toon? 
 * Can we write down the Q-values in a more compact way?
-  * Let's devise a tree to do this
+    * Let's devise a method to do this
 * Examples include linear function approximators, neural networks, n-tuple networks
 * Not easy to do, few convergence guarantees
     * But with some effort, this works pretty well
 
 
 ## Policy with features
+
+* What if after catching fish there was another action to choose from ("how many should I eat?")
 
 
 |  Policy | Policy Value  | Q-Values  |   |   |
@@ -611,9 +613,28 @@ Q_n(s,a) &= Q_{n-1}(s,a) + \eta\left[R(s,a)+\gamma Q_{n-1}(s',a')  - Q_{n-1}(s,a
 | $\pi(Restaurant, Eat\mhyphen \phi\mhyphen fish)$   |  1 |  $\phi$ |   |   |
 
 
-## Do we have to learning Q-Values? 
+## What do we actually learn?
 
-* ? 
+* $X$ are our features
+* Targets are
+    * Q-learning
+        * $y =  R(s,a) + \gamma \max\limits_{a' \in A}Q(s',a')$
+    * SARSA(0) 
+        * $y =  R(s,a) + \gamma Q(s',a')$
+    * SARSA(1)/MC,
+        * $y =  \gets \mathrm{v_\tau}$
+        * $\mathrm{v_\tau}  \gets R(s,a)+\gamma R(s',a')+...\gamma^2 R(s'',a'') + \gamma^{\tau-1}R(s^\tau, a^\tau)$ 
+    * N-Step versions
+        * Same as MC version, but stop prematurely and take a SARSA/Q-learning target
+
+
+##  What can be used as features?
+
+* Anything (text, sound chunks, images)
+* For text see here: 
+    * \url{https://github.com/facebookresearch/CommAI-env}
+* You often don't need to start from scratch, for text you have *word2vec*
+* Different Neural Network architectures
 
 
 
@@ -622,15 +643,16 @@ Q_n(s,a) &= Q_{n-1}(s,a) + \eta\left[R(s,a)+\gamma Q_{n-1}(s',a')  - Q_{n-1}(s,a
 * Can approximate almost any function
 * We had a series of recent advances
     * Go ($10^{170}$ states)
-    * Atari ($10^{10^7}$ states)
+    * Atari (grayscale, 110 x 84 resolution)
 
 
 ## Platforms
 * Tools
-  * Keras (neural networks)
-  * Tensorflow (neural networks, but closer to the machine)
-  * \url{goo.gl/YGWSbL}
-  * Open AI gym
+    * Keras (neural networks)
+    * Tensorflow (neural networks, but closer to the machine)
+    * \url{goo.gl/YGWSbL}
+    * Open AI gym
+* There is a phenomenal lack of windows support!
 * Let's look at open AI gym
 * A lot of modern work is a combination of RL with neural networks
 * We have good libraries now
@@ -643,6 +665,10 @@ Q_n(s,a) &= Q_{n-1}(s,a) + \eta\left[R(s,a)+\gamma Q_{n-1}(s',a')  - Q_{n-1}(s,a
   * Multiple ways of breaking correlations
       * Experience replay, asynchronous games
 * Again, think of Neural Networks as a mechanism for storing Q-Values
+
+## What are we learning? 
+
+
 
 
 ## Neural Network architecture
@@ -687,7 +713,7 @@ Intelligence) into one coherent whole
     * ... and act on it
 
 
-# Causality
+
 
 ## Causality (a very brief intro)
 
@@ -709,7 +735,7 @@ Intelligence) into one coherent whole
 * Off-policy evaluation learning
 * Let's see an example
     * Features are colour of hair, height, smoking
-    * Reward is -1000 (lung disease), 1 (healthy)
+    * Reward is 0 (lung disease), 1 (healthy)
 * This would have been supervised learning if we knew the policy!
 
 
@@ -747,3 +773,9 @@ of the field
 * Reinforcement Learning: State-Of-The-Art by Marco Wiering (Editor), Martijn
 Van Otterlo (Editor)
     * Edited Volume
+
+
+## Some modern papers
+* Asynchronous Methods for Deep Reinforcement Learning \url{https://arxiv.org/pdf/1602.01783v2.pdf}
+* A Survey of Monte Carlo Tree Search Methods \url{http://www.cameronius.com/cv/mcts-survey-master.pdf}
+* Deep Exploration via Bootstrapped DQN \url{https://arxiv.org/abs/1602.04621}
